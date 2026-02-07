@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Link as LinkIcon, Palette, BarChart2, Settings, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Link as LinkIcon, Palette, BarChart2, Settings, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/store/useAuth';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
@@ -14,8 +14,10 @@ const navItems = [
 export function DashboardLayout() {
   const location = useLocation();
   const navigate = useNavigate();
+  // ZUSTAND COMPLIANCE: Stable primitive selectors
   const logout = useAuth((s) => s.logout);
-  const user = useAuth((s) => s.user);
+  const fullName = useAuth((s) => s.user?.fullName);
+  const username = useAuth((s) => s.user?.username);
   const plan = useAuth((s) => s.plan);
   const handleLogout = () => {
     logout();
@@ -31,11 +33,11 @@ export function DashboardLayout() {
           <SidebarContent className="px-4">
             <div className="mb-8 p-4 bg-white/5 border border-white/5 rounded-lg space-y-1">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-onyx-gold flex items-center justify-center text-onyx-dark font-display">
-                  {user?.fullName?.charAt(0) || 'U'}
+                <div className="w-8 h-8 rounded-full bg-onyx-gold flex items-center justify-center text-onyx-dark font-display shrink-0">
+                  {fullName?.charAt(0) || 'U'}
                 </div>
                 <div className="truncate">
-                  <p className="text-sm font-medium text-onyx-white truncate">{user?.fullName}</p>
+                  <p className="text-sm font-medium text-onyx-white truncate">{fullName}</p>
                   <p className="text-[10px] text-onyx-gold tracking-widest uppercase">{plan} PLAN</p>
                 </div>
               </div>
@@ -64,7 +66,7 @@ export function DashboardLayout() {
           <header className="flex h-16 items-center border-b border-white/5 px-6 shrink-0">
              <SidebarTrigger className="text-onyx-gold" />
              <div className="ml-auto flex items-center gap-4">
-                <Link to={`/${user?.username}`} target="_blank" className="text-xs font-ornament text-onyx-gold hover:text-onyx-gold-light tracking-widest uppercase border border-onyx-gold/20 px-3 py-1 rounded">View Live Bio</Link>
+                <Link to={`/${username}`} target="_blank" className="text-xs font-ornament text-onyx-gold hover:text-onyx-gold-light tracking-widest uppercase border border-onyx-gold/20 px-3 py-1 rounded">View Live Bio</Link>
              </div>
           </header>
           <main className="flex-1 overflow-y-auto">

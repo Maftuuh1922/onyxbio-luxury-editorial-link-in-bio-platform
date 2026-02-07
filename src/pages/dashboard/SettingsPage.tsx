@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Shield, Crown, CheckCircle2 } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { useAuth } from '@/store/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,9 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 export function SettingsPage() {
-  const user = useAuth((s) => s.user);
+  // ZUSTAND COMPLIANCE: One primitive per selector
+  const fullName = useAuth((s) => s.user?.fullName);
+  const email = useAuth((s) => s.user?.email);
   const plan = useAuth((s) => s.plan);
   const setPlan = useAuth((s) => s.setPlan);
   const [isUpgradeOpen, setIsUpgradeOpen] = useState(false);
@@ -33,21 +35,21 @@ export function SettingsPage() {
           <Card className="bg-onyx-secondary border-white/5 p-8 space-y-8">
             <div className="flex items-center gap-4 border-b border-white/5 pb-8">
               <div className="w-20 h-20 rounded-full bg-onyx-gold flex items-center justify-center text-onyx-dark text-3xl font-display">
-                {user?.fullName?.charAt(0)}
+                {fullName?.charAt(0)}
               </div>
               <div>
-                <h3 className="font-display text-2xl text-onyx-white uppercase">{user?.fullName}</h3>
+                <h3 className="font-display text-2xl text-onyx-white uppercase">{fullName}</h3>
                 <p className="text-onyx-gold font-ornament tracking-widest text-[10px] uppercase">{plan} Member</p>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Full Name</Label>
-                <Input defaultValue={user?.fullName} className="bg-white/5 border-white/10 rounded-none" />
+                <Input defaultValue={fullName} className="bg-white/5 border-white/10 rounded-none" />
               </div>
               <div className="space-y-2">
                 <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Email Address</Label>
-                <Input defaultValue={user?.email} className="bg-white/5 border-white/10 rounded-none" />
+                <Input defaultValue={email} className="bg-white/5 border-white/10 rounded-none" />
               </div>
             </div>
             <Button className="bg-onyx-gold text-onyx-dark font-ornament tracking-widest px-8 rounded-none">SAVE CHANGES</Button>
@@ -103,17 +105,6 @@ export function SettingsPage() {
                   </div>
                 </DialogContent>
               </Dialog>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-white/5">
-               <div className="flex items-center gap-3 text-onyx-gray text-xs font-ornament uppercase tracking-widest">
-                 <CheckCircle2 className="w-4 h-4 text-onyx-gold" /> Personalized Themes
-               </div>
-               <div className="flex items-center gap-3 text-onyx-gray text-xs font-ornament uppercase tracking-widest">
-                 <CheckCircle2 className="w-4 h-4 text-onyx-gold" /> Global Edge Hosting
-               </div>
-               <div className="flex items-center gap-3 text-onyx-gray text-xs font-ornament uppercase tracking-widest">
-                 <CheckCircle2 className="w-4 h-4 text-onyx-gold" /> Secure Data Atelier
-               </div>
             </div>
           </Card>
         </TabsContent>

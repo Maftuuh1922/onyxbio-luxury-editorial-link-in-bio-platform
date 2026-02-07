@@ -6,14 +6,14 @@ import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { useAuth } from '@/store/useAuth';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
-const iconMap: Record<string, any> = { 
-  Globe, 
-  Instagram, 
-  Mail, 
-  Twitter, 
-  Youtube, 
+const iconMap: Record<string, any> = {
+  Globe,
+  Instagram,
+  Mail,
+  Twitter,
+  Youtube,
   Linkedin,
-  Email: Mail // Fallback for case sensitivity or direct mapping
+  Email: Mail
 };
 const getSocialUrl = (platform: string, handle: string) => {
   if (!handle) return '#';
@@ -29,7 +29,8 @@ const getSocialUrl = (platform: string, handle: string) => {
 };
 export function PublicProfilePage() {
   const { username } = useParams();
-  const currentUser = useAuth((s) => s.user);
+  // ZUSTAND ZERO-TOLERANCE COMPLIANCE: One primitive per selector
+  const currentUserUsername = useAuth((s) => s.user?.username);
   const profileName = useProfile((s) => s.name);
   const profileTagline = useProfile((s) => s.tagline);
   const profileBio = useProfile((s) => s.bio);
@@ -37,9 +38,8 @@ export function PublicProfilePage() {
   const profileLinks = useProfile((s) => s.links);
   const socials = useProfile((s) => s.socials);
   const appearance = useProfile((s) => s.appearance);
-  const isOwnProfile = currentUser?.username?.toLowerCase() === username?.toLowerCase();
+  const isOwnProfile = currentUserUsername?.toLowerCase() === username?.toLowerCase();
   const isDemoProfile = username?.toLowerCase() === 'alexander';
-  // A profile is accessible if it's the demo or if the slug matches the stored profile
   const profileSlug = profileName.toLowerCase().replace(/\s+/g, '');
   const isMatch = username?.toLowerCase() === profileSlug;
   const displayProfile = (isMatch || isOwnProfile) ? {
@@ -70,12 +70,12 @@ export function PublicProfilePage() {
     'onyx-gold': 'text-onyx-gold',
     'silver-noir': 'text-onyx-gray',
     'royal-emerald': 'text-emerald-400'
-  }[displayProfile.appearance.themeId as 'onyx-gold' | 'silver-noir' | 'royal-emerald'];
+  }[displayProfile.appearance.themeId as 'onyx-gold' | 'silver-noir' | 'royal-emerald'] ?? 'text-onyx-gold';
   const fontClasses = {
     'editorial': 'font-serif',
     'modern': 'font-sans',
     'classic': 'font-serif'
-  }[displayProfile.appearance.fontPairId as 'editorial' | 'modern' | 'classic'];
+  }[displayProfile.appearance.fontPairId as 'editorial' | 'modern' | 'classic'] ?? 'font-serif';
   return (
     <div className={cn("relative min-h-screen bg-onyx-dark text-onyx-white selection:bg-onyx-gold selection:text-onyx-dark overflow-x-hidden", fontClasses)}>
       <LuxuryBackground />
@@ -95,14 +95,14 @@ export function PublicProfilePage() {
           {displayProfile.links.map((link: any, idx: number) => {
             const Icon = iconMap[link.icon] || Globe;
             return (
-              <motion.a 
-                key={link.id} 
-                href={link.url} 
+              <motion.a
+                key={link.id}
+                href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }} 
-                animate={{ opacity: 1, y: 0 }} 
-                transition={{ delay: 0.2 + (idx * 0.1) }} 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + (idx * 0.1) }}
                 className="glass-card shimmer-trigger block p-6 md:p-8 group"
               >
                 <div className="flex items-center justify-between">
@@ -130,11 +130,11 @@ export function PublicProfilePage() {
             const platformIconName = key === 'email' ? 'Mail' : key.charAt(0).toUpperCase() + key.slice(1);
             const Icon = iconMap[platformIconName] || Globe;
             return (
-              <a 
-                key={key} 
-                href={getSocialUrl(key, value as string)} 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <a
+                key={key}
+                href={getSocialUrl(key, value as string)}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={cn("hover:scale-125 transition-all duration-300 hover:text-onyx-gold-light", themeClasses)}
               >
                 <Icon className="w-5 h-5" />

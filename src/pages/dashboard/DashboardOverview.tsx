@@ -18,8 +18,10 @@ const data = [
 ];
 export function DashboardOverview() {
   const navigate = useNavigate();
+  // ZUSTAND COMPLIANCE: Stable primitive/array selection
   const links = useProfile((s) => s.links);
-  const activeLinksCount = links.filter(l => l.active).length;
+  const activeLinksCount = React.useMemo(() => links.filter(l => l.active).length, [links]);
+  const recentLinks = React.useMemo(() => links.slice(0, 3), [links]);
   const stats = [
     { label: 'Total Views', value: '1,284', icon: Eye, color: 'text-blue-400' },
     { label: 'Total Clicks', value: '842', icon: MousePointer2, color: 'text-onyx-gold' },
@@ -33,7 +35,7 @@ export function DashboardOverview() {
           <h1 className="font-display text-3xl text-onyx-white uppercase tracking-wider">Overview</h1>
           <p className="text-onyx-gray font-serif italic">Your digital presence at a glance.</p>
         </div>
-        <Button 
+        <Button
           onClick={() => navigate('/dashboard/links')}
           className="bg-onyx-gold hover:bg-onyx-gold-light text-onyx-dark font-ornament tracking-widest px-6"
         >
@@ -85,7 +87,7 @@ export function DashboardOverview() {
         <Card className="bg-onyx-secondary border-white/5 p-8 space-y-6">
           <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold">Top Performing Links</h3>
           <div className="space-y-4">
-            {links.slice(0, 3).map((l, i) => (
+            {recentLinks.map((l, i) => (
               <div key={l.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-onyx-dark border border-onyx-gold/20 flex items-center justify-center text-onyx-gold font-ornament">{i + 1}</div>

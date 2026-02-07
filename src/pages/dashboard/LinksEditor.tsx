@@ -1,35 +1,32 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  DndContext, 
-  closestCenter, 
-  KeyboardSensor, 
-  PointerSensor, 
-  useSensor, 
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
   useSensors,
-  DragEndEvent 
+  DragEndEvent
 } from '@dnd-kit/core';
-import { 
-  arrayMove, 
-  SortableContext, 
-  sortableKeyboardCoordinates, 
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
   useSortable
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { 
-  Plus, 
-  GripVertical, 
-  Trash2, 
-  ExternalLink, 
-  Eye, 
-  EyeOff, 
-  Globe, 
-  Instagram, 
-  Mail, 
-  Twitter, 
-  Youtube, 
-  Linkedin 
+import {
+  Plus,
+  GripVertical,
+  Trash2,
+  Globe,
+  Instagram,
+  Mail,
+  Twitter,
+  Youtube,
+  Linkedin
 } from 'lucide-react';
 import { useProfile, Link as LinkType } from '@/store/useProfile';
 import { Button } from '@/components/ui/button';
@@ -66,7 +63,7 @@ function SortableLinkCard({ link }: { link: LinkType }) {
         !link.active && "opacity-60 grayscale"
       )}
     >
-      <button {...attributes} {...listeners} className="cursor-grab text-onyx-gray hover:text-onyx-gold">
+      <button {...attributes} {...listeners} className="cursor-grab text-onyx-gray hover:text-onyx-gold p-1">
         <GripVertical className="w-5 h-5" />
       </button>
       <div className="w-10 h-10 rounded bg-onyx-dark border border-white/10 flex items-center justify-center text-onyx-gold">
@@ -77,13 +74,13 @@ function SortableLinkCard({ link }: { link: LinkType }) {
         <p className="text-xs text-onyx-gray truncate italic font-serif">{link.subtitle}</p>
       </div>
       <div className="flex items-center gap-3">
-        <Switch 
-          checked={link.active} 
+        <Switch
+          checked={link.active}
           onCheckedChange={(checked) => updateLink(link.id, { active: checked })}
         />
-        <Button 
-          variant="ghost" 
-          size="icon" 
+        <Button
+          variant="ghost"
+          size="icon"
           className="text-onyx-gray hover:text-red-400"
           onClick={() => deleteLink(link.id)}
         >
@@ -137,31 +134,31 @@ export function LinksEditor() {
             <form onSubmit={handleAddSubmit} className="space-y-4 pt-4">
               <div className="space-y-2">
                 <Label className="font-ornament text-[10px] tracking-widest uppercase">Display Title</Label>
-                <Input 
-                  required 
+                <Input
+                  required
                   value={newLink.title}
                   onChange={(e) => setNewLink({ ...newLink, title: e.target.value })}
-                  placeholder="PORTFOLIO" 
-                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50" 
+                  placeholder="PORTFOLIO"
+                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="font-ornament text-[10px] tracking-widest uppercase">Subtitle (Optional)</Label>
-                <Input 
+                <Input
                   value={newLink.subtitle}
                   onChange={(e) => setNewLink({ ...newLink, subtitle: e.target.value })}
-                  placeholder="View my latest works" 
-                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50" 
+                  placeholder="View my latest works"
+                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50"
                 />
               </div>
               <div className="space-y-2">
                 <Label className="font-ornament text-[10px] tracking-widest uppercase">Destination URL</Label>
-                <Input 
-                  required 
+                <Input
+                  required
                   value={newLink.url}
                   onChange={(e) => setNewLink({ ...newLink, url: e.target.value })}
-                  placeholder="https://..." 
-                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50" 
+                  placeholder="https://..."
+                  className="bg-white/5 border-white/10 rounded-none focus-visible:ring-onyx-gold/50"
                 />
               </div>
               <Button type="submit" className="w-full bg-onyx-gold text-onyx-dark font-ornament tracking-[0.2em] rounded-none py-6 mt-4">
@@ -171,9 +168,9 @@ export function LinksEditor() {
           </DialogContent>
         </Dialog>
       </div>
-      <DndContext 
-        sensors={sensors} 
-        collisionDetection={closestCenter} 
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={links.map(l => l.id)} strategy={verticalListSortingStrategy}>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Palette, Type, UserCircle, Check, Share2, Instagram, Twitter, Linkedin, Youtube, Mail, Globe, ArrowRight } from 'lucide-react';
+import { Palette, UserCircle, Check, Share2, Instagram, Twitter, Linkedin, Youtube, Mail, Globe } from 'lucide-react';
 import { useProfile } from '@/store/useProfile';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -14,12 +14,14 @@ const themes = [
 ] as const;
 const iconMap: Record<string, any> = { Globe, Instagram, Mail, Twitter, Youtube, Linkedin };
 export function AppearanceEditor() {
+  // ZUSTAND ZERO-TOLERANCE: Individual primitive selectors
   const name = useProfile((s) => s.name);
   const tagline = useProfile((s) => s.tagline);
   const bio = useProfile((s) => s.bio);
   const links = useProfile((s) => s.links);
   const socials = useProfile((s) => s.socials);
-  const appearance = useProfile((s) => s.appearance);
+  const appearanceTheme = useProfile((s) => s.appearance.themeId);
+  const appearanceFont = useProfile((s) => s.appearance.fontPairId);
   const updateProfile = useProfile((s) => s.updateProfile);
   const updateAppearance = useProfile((s) => s.updateAppearance);
   const updateSocials = useProfile((s) => s.updateSocials);
@@ -27,12 +29,12 @@ export function AppearanceEditor() {
     'onyx-gold': 'text-onyx-gold',
     'silver-noir': 'text-onyx-gray',
     'royal-emerald': 'text-emerald-400'
-  }[appearance.themeId] || 'text-onyx-gold';
+  }[appearanceTheme] || 'text-onyx-gold';
   const previewFontClass = {
     'editorial': 'font-serif',
     'modern': 'font-sans',
     'classic': 'font-serif'
-  }[appearance.fontPairId] || 'font-serif';
+  }[appearanceFont] || 'font-serif';
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -73,11 +75,11 @@ export function AppearanceEditor() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {themes.map((theme) => (
-                <button key={theme.id} onClick={() => updateAppearance({ themeId: theme.id })} className={cn("glass-card p-4 border-white/5 text-left transition-all", appearance.themeId === theme.id ? "ring-2 ring-onyx-gold bg-onyx-gold/5 border-onyx-gold/40" : "hover:border-white/20")}>
+                <button key={theme.id} onClick={() => updateAppearance({ themeId: theme.id })} className={cn("glass-card p-4 border-white/5 text-left transition-all", appearanceTheme === theme.id ? "ring-2 ring-onyx-gold bg-onyx-gold/5 border-onyx-gold/40" : "hover:border-white/20")}>
                   <div className={cn("w-full h-16 mb-4 rounded border border-white/10", theme.color)} />
                   <div className="flex items-center justify-between">
                     <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white block">{theme.name}</span>
-                    {appearance.themeId === theme.id && <Check className="w-3 h-3 text-onyx-gold" />}
+                    {appearanceTheme === theme.id && <Check className="w-3 h-3 text-onyx-gold" />}
                   </div>
                 </button>
               ))}
@@ -101,7 +103,6 @@ export function AppearanceEditor() {
                       </div>
                     );
                   })}
-                  {links.filter(l => l.active).length === 0 && <div className="text-[8px] text-onyx-gray text-center italic py-4">No links active</div>}
                 </div>
                 <div className="flex gap-4 relative z-10 mt-auto pb-4">
                    {Object.entries(socials).filter(([_, v]) => v).slice(0, 4).map(([k]) => {
