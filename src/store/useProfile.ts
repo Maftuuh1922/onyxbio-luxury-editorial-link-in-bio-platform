@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create, UseBoundStore, StoreApi } from 'zustand';
 import { persist } from 'zustand/middleware';
 export interface Link {
   id: string;
@@ -58,7 +58,9 @@ interface ProfileState {
   updateSocials: (data: Partial<Socials>) => void;
   resetProfile: () => void;
 }
-export const useProfile = create<ProfileState>()(
+type ProfileStore = UseBoundStore<StoreApi<ProfileState>>;
+
+export const useProfile: ProfileStore = create<ProfileState>()(
   persist(
     (set) => ({
       ...DEFAULT_PROFILE,

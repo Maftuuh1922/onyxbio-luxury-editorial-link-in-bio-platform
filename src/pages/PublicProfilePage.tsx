@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useShallow } from 'zustand/react/shallow';
 import { Instagram, Youtube, Linkedin, Mail, Globe, Twitter, ArrowRight } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { useAuth } from '@/store/useAuth';
@@ -36,11 +35,11 @@ export function PublicProfilePage() {
   const profileTagline = useProfile(s => s.tagline);
   const profileBio = useProfile(s => s.bio);
   const profileAvatar = useProfile(s => s.avatar);
-  const profileLinks = useProfile(useShallow(s => s.links));
-  const socials = useProfile(useShallow(s => s.socials));
-  const appearance = useProfile(useShallow(s => s.appearance));
-  const profileSlug = useMemo(() => 
-    profileName.toLowerCase().trim().replace(/[^a-z0-9]+/g, ''), 
+  const profileLinks = useProfile(s => s.links);
+  const socials = useProfile(s => s.socials);
+  const appearance = useProfile(s => s.appearance);
+  const profileSlug = useMemo(() =>
+    (profileName || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, ''),
     [profileName]
   );
   const isOwnProfile = currentUserUsername?.toLowerCase() === username?.toLowerCase();
