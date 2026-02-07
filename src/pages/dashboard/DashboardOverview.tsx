@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Eye, MousePointer2, Link as LinkIcon, TrendingUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ const data = [
   { name: 'Sun', views: 349, clicks: 430 },
 ];
 export function DashboardOverview() {
+  const navigate = useNavigate();
   const links = useProfile((s) => s.links);
   const activeLinksCount = links.filter(l => l.active).length;
   const stats = [
@@ -31,7 +33,10 @@ export function DashboardOverview() {
           <h1 className="font-display text-3xl text-onyx-white uppercase tracking-wider">Overview</h1>
           <p className="text-onyx-gray font-serif italic">Your digital presence at a glance.</p>
         </div>
-        <Button className="bg-onyx-gold hover:bg-onyx-gold-light text-onyx-dark font-ornament tracking-widest px-6">
+        <Button 
+          onClick={() => navigate('/dashboard/links')}
+          className="bg-onyx-gold hover:bg-onyx-gold-light text-onyx-dark font-ornament tracking-widest px-6"
+        >
           + ADD NEW LINK
         </Button>
       </div>
@@ -94,6 +99,7 @@ export function DashboardOverview() {
                 </div>
               </div>
             ))}
+            {links.length === 0 && <p className="text-onyx-gray italic text-center text-sm py-4">No links active.</p>}
           </div>
         </Card>
         <Card className="bg-onyx-secondary border-white/5 p-8 space-y-6">

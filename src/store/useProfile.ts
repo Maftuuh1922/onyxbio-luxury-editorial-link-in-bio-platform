@@ -8,6 +8,13 @@ export interface Link {
   icon: string;
   active: boolean;
 }
+export interface Socials {
+  instagram: string;
+  twitter: string;
+  linkedin: string;
+  youtube: string;
+  email: string;
+}
 export interface Appearance {
   themeId: 'onyx-gold' | 'silver-noir' | 'royal-emerald';
   fontPairId: 'classic' | 'modern' | 'editorial';
@@ -18,6 +25,7 @@ interface ProfileState {
   bio: string;
   avatar: string;
   links: Link[];
+  socials: Socials;
   appearance: Appearance;
   updateProfile: (data: Partial<Pick<ProfileState, 'name' | 'tagline' | 'bio' | 'avatar'>>) => void;
   addLink: (link: Omit<Link, 'id'>) => void;
@@ -25,6 +33,7 @@ interface ProfileState {
   deleteLink: (id: string) => void;
   reorderLinks: (links: Link[]) => void;
   updateAppearance: (data: Partial<Appearance>) => void;
+  updateSocials: (data: Partial<Socials>) => void;
 }
 export const useProfile = create<ProfileState>()(
   persist(
@@ -38,6 +47,13 @@ export const useProfile = create<ProfileState>()(
         { id: '2', title: 'INSTAGRAM', subtitle: 'Daily glimpses into my process', url: 'https://instagram.com', icon: 'Instagram', active: true },
         { id: '3', title: 'CONTACT', subtitle: 'Let’s build something together', url: 'mailto:hello@onyx.bio', icon: 'Mail', active: true },
       ],
+      socials: {
+        instagram: 'alexander_onyx',
+        twitter: 'onyx_vision',
+        linkedin: 'alexander-onyx',
+        youtube: 'onyx-studio',
+        email: 'hello@onyx.bio',
+      },
       appearance: {
         themeId: 'onyx-gold',
         fontPairId: 'editorial',
@@ -55,6 +71,9 @@ export const useProfile = create<ProfileState>()(
       reorderLinks: (links) => set({ links }),
       updateAppearance: (data) => set((state) => ({
         appearance: { ...state.appearance, ...data }
+      })),
+      updateSocials: (data) => set((state) => ({
+        socials: { ...state.socials, ...data }
       })),
     }),
     {
