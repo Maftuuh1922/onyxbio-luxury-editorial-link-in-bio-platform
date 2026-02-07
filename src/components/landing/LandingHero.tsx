@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 export function LandingHero() {
   return (
@@ -14,7 +14,7 @@ export function LandingHero() {
             transition={{ duration: 0.8 }}
             className="space-y-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white text-sm font-medium">
               <Sparkles className="w-4 h-4 text-onyx-gold" />
               <span>Version 2.0 is now live</span>
             </div>
@@ -25,11 +25,11 @@ export function LandingHero() {
             <p className="text-lg md:text-xl text-white/60 max-w-lg leading-relaxed">
               Elevate your digital presence with OnyxBio. A premium, high-energy platform for curators, creators, and visionaries.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 max-w-md">
-              <div className="flex-1 w-full px-4 text-white/40 text-sm">
+            <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/10 max-w-md backdrop-blur-md">
+              <div className="flex-1 w-full px-4 text-white/40 text-sm font-medium">
                 onyx.bio/<span className="text-white">yourname</span>
               </div>
-              <Button className="w-full sm:w-auto bg-onyx-gold hover:bg-onyx-gold/90 text-onyx-dark font-bold px-8 py-6 rounded-xl transition-all hover:scale-105">
+              <Button className="w-full sm:w-auto bg-onyx-gold hover:bg-onyx-gold/90 text-onyx-dark font-bold px-8 py-6 rounded-xl transition-all hover:scale-105 active:scale-95">
                 Claim Now
               </Button>
             </div>

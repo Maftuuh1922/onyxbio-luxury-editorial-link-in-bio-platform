@@ -9,7 +9,11 @@ const FeatureSection = ({
   desc,
   icon: Icon,
   visual,
-  reverse = false
+  reverse = false,
+  textColor = "text-white",
+  mutedTextColor = "text-white/80",
+  iconBg = "bg-white/10",
+  iconColor = "text-white"
 }: {
   id: string,
   bg: string,
@@ -17,7 +21,11 @@ const FeatureSection = ({
   desc: string,
   icon: any,
   visual: React.ReactNode,
-  reverse?: boolean
+  reverse?: boolean,
+  textColor?: string,
+  mutedTextColor?: string,
+  iconBg?: string,
+  iconColor?: string
 }) => (
   <div id={id} className={cn(bg, "py-24 md:py-32 overflow-hidden")}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -28,16 +36,16 @@ const FeatureSection = ({
           viewport={{ once: true }}
           className="flex-1 space-y-8"
         >
-          <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center text-white">
+          <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center", iconBg, iconColor)}>
             <Icon size={32} />
           </div>
-          <h2 className="font-space font-bold text-4xl md:text-6xl text-white leading-tight">
+          <h2 className={cn("font-space font-bold text-4xl md:text-6xl leading-tight", textColor)}>
             {title}
           </h2>
-          <p className="font-space text-lg md:text-xl text-white/80 leading-relaxed">
+          <p className={cn("font-space text-lg md:text-xl leading-relaxed", mutedTextColor)}>
             {desc}
           </p>
-          <button className="inline-flex items-center gap-2 font-space font-bold text-white group hover:gap-4 transition-all">
+          <button className={cn("inline-flex items-center gap-2 font-space font-bold group hover:gap-4 transition-all", textColor)}>
             Learn more <ArrowRight size={20} className="transition-transform group-hover:translate-x-1" />
           </button>
         </motion.div>
@@ -98,6 +106,10 @@ export function LandingFeatures() {
         icon={BarChart3}
         title="Analyze with precision."
         desc="Deep insights into your traffic. Know where your visitors come from, what they click, and how they engage with your content."
+        textColor="text-brand-text"
+        mutedTextColor="text-brand-text/70"
+        iconBg="bg-brand-text/5"
+        iconColor="text-brand-text"
         visual={
           <div className="bg-white rounded-[2.5rem] p-10 border border-black/5 shadow-2xl space-y-8 text-black">
             <div className="flex items-center justify-between">
