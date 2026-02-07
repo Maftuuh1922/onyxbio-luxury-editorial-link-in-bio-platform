@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { LayoutDashboard, Link as LinkIcon, Palette, BarChart2, Settings, LogOut, Copy, ExternalLink, HelpCircle, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/store/useAuth';

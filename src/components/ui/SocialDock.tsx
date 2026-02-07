@@ -5,12 +5,13 @@ import { useProfile } from '@/store/useProfile';
 import { ICON_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { useShallow } from 'zustand/react/shallow';
 interface SocialDockProps {
   forceVisible?: boolean;
 }
 export function SocialDock({ forceVisible = false }: SocialDockProps) {
-  const socials = useProfile(s => s.socials);
-  const appearance = useProfile(s => s.appearance);
+  const socials = useProfile(useShallow(s => s.socials));
+  const appearance = useProfile(useShallow(s => s.appearance));
   const accentColor = appearance.colors.accent;
   const iconStyle = appearance.layout.socialIconStyle || 'minimal';
   const [isVisible, setIsVisible] = useState(true);

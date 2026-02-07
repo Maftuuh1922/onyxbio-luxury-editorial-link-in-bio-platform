@@ -9,15 +9,16 @@ import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
 import { Appearance } from '@/store/useProfile';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
+import { useShallow } from 'zustand/react/shallow';
 export function PublicProfilePage() {
   const { username } = useParams();
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
   const bio = useProfile(s => s.bio);
   const avatar = useProfile(s => s.avatar);
-  const links = useProfile(s => s.links);
-  const appearance = useProfile(s => s.appearance) as Appearance | undefined;
-  const customCode = useProfile(s => s.customCode);
+  const links = useProfile(useShallow(s => s.links));
+  const appearance = useProfile(useShallow(s => s.appearance)) as Appearance | undefined;
+  const customCode = useProfile(useShallow(s => s.customCode));
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   useEffect(() => {
@@ -79,9 +80,9 @@ export function PublicProfilePage() {
       />
       {customCode?.enabled && customCode?.css && <style>{customCode.css}</style>}
       <div className="fixed inset-0 z-0">
-        <LuxuryBackground 
-          pattern={appearance?.bgPattern} 
-          palettePrimary={appearance?.colors?.accent} 
+        <LuxuryBackground
+          pattern={appearance?.bgPattern}
+          palettePrimary={appearance?.colors?.accent}
         />
       </div>
       <motion.main
