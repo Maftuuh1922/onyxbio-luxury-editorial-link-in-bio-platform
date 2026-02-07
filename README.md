@@ -1,6 +1,6 @@
 # Onyx Bio
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Maftuuh1922/onyxbio-luxury-editorial-link-in-bio-platform)
 
 Onyx Bio is a modern, full-stack web application built on Cloudflare Pages and Workers. It features a responsive React frontend with Tailwind CSS and shadcn/ui components, powered by a Hono-based API backend. Designed for performance, scalability, and developer experience, this template is ideal for building dynamic web apps with seamless edge deployment.
 
@@ -118,7 +118,7 @@ Deploy to Cloudflare Pages + Workers:
    wrangler deploy
    ```
 
-[cloudflarebutton]
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Maftuuh1922/onyxbio-luxury-editorial-link-in-bio-platform)
 
 **Custom Domain**: Bind via Cloudflare Dashboard > Pages > Custom Domains.
 
