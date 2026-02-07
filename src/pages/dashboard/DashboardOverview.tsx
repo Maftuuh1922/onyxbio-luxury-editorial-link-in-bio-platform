@@ -4,6 +4,8 @@ import { Eye, MousePointer2, Link as LinkIcon, TrendingUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useProfile } from '@/store/useProfile';
+import { cn } from '@/lib/utils';
 const data = [
   { name: 'Mon', views: 400, clicks: 240 },
   { name: 'Tue', views: 300, clicks: 139 },
@@ -13,13 +15,15 @@ const data = [
   { name: 'Sat', views: 239, clicks: 380 },
   { name: 'Sun', views: 349, clicks: 430 },
 ];
-const stats = [
-  { label: 'Total Views', value: '1,284', icon: Eye, color: 'text-blue-400' },
-  { label: 'Total Clicks', value: '842', icon: MousePointer2, color: 'text-onyx-gold' },
-  { label: 'Avg CTR', value: '65.5%', icon: TrendingUp, color: 'text-green-400' },
-  { label: 'Active Links', value: '8', icon: LinkIcon, color: 'text-purple-400' },
-];
 export function DashboardOverview() {
+  const links = useProfile((s) => s.links);
+  const activeLinksCount = links.filter(l => l.active).length;
+  const stats = [
+    { label: 'Total Views', value: '1,284', icon: Eye, color: 'text-blue-400' },
+    { label: 'Total Clicks', value: '842', icon: MousePointer2, color: 'text-onyx-gold' },
+    { label: 'Avg CTR', value: '65.5%', icon: TrendingUp, color: 'text-green-400' },
+    { label: 'Active Links', value: activeLinksCount.toString(), icon: LinkIcon, color: 'text-purple-400' },
+  ];
   return (
     <div className="p-6 md:p-8 space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -63,7 +67,7 @@ export function DashboardOverview() {
               <CartesianGrid strokeDasharray="3 3" stroke="#222" />
               <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip 
+              <Tooltip
                 contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', color: '#e8e8e8' }}
                 itemStyle={{ color: '#c9a961' }}
               />
@@ -76,17 +80,17 @@ export function DashboardOverview() {
         <Card className="bg-onyx-secondary border-white/5 p-8 space-y-6">
           <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold">Top Performing Links</h3>
           <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded">
+            {links.slice(0, 3).map((l, i) => (
+              <div key={l.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-onyx-dark border border-onyx-gold/20 flex items-center justify-center text-onyx-gold font-ornament">{i}</div>
+                  <div className="w-10 h-10 bg-onyx-dark border border-onyx-gold/20 flex items-center justify-center text-onyx-gold font-ornament">{i + 1}</div>
                   <div>
-                    <p className="text-sm font-medium text-onyx-white">Portfolio Website</p>
-                    <p className="text-[10px] text-onyx-gray uppercase">alexonyx.design</p>
+                    <p className="text-sm font-medium text-onyx-white truncate max-w-[150px]">{l.title}</p>
+                    <p className="text-[10px] text-onyx-gray uppercase truncate max-w-[150px]">{l.url.replace(/(^\w+:|^)\/\//, '')}</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-display text-onyx-gold">432 Clicks</p>
+                  <p className="text-sm font-display text-onyx-gold">{Math.floor(Math.random() * 500)} Clicks</p>
                 </div>
               </div>
             ))}

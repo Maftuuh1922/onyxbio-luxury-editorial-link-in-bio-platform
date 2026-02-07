@@ -17,6 +17,8 @@ import { HomePage } from '@/pages/HomePage';
 import { AuthPage } from '@/pages/AuthPage';
 import { PublicProfilePage } from '@/pages/PublicProfilePage';
 import { DashboardOverview } from '@/pages/dashboard/DashboardOverview';
+import { LinksEditor } from '@/pages/dashboard/LinksEditor';
+import { AppearanceEditor } from '@/pages/dashboard/AppearanceEditor';
 // Layouts
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 const queryClient = new QueryClient();
@@ -43,8 +45,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/dashboard/overview" replace /> },
       { path: "overview", element: <DashboardOverview /> },
-      { path: "links", element: <div className="p-8">Links Management (Coming Soon)</div> },
-      { path: "appearance", element: <div className="p-8">Appearance Editor (Coming Soon)</div> },
+      { path: "links", element: <LinksEditor /> },
+      { path: "appearance", element: <AppearanceEditor /> },
       { path: "analytics", element: <div className="p-8">Detailed Analytics (Coming Soon)</div> },
       { path: "settings", element: <div className="p-8">Account Settings (Coming Soon)</div> },
     ]
