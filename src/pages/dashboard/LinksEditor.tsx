@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Plus, GripVertical, Trash2, Calendar, Search } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Calendar, Search, CreditCard, Play, Globe, Sparkles, Clock } from 'lucide-react';
 import { useProfile, Link as LinkType } from '@/store/useProfile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,7 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
 import { cn } from '@/lib/utils';
-import { ICON_OPTIONS } from '@/lib/constants';
+import { ICON_OPTIONS, LINK_TYPES, CURRENCY_OPTIONS, COMMERCE_PROVIDERS, WIDGET_PLATFORMS } from '@/lib/constants';
 function SortableLinkCard({ link }: { link: LinkType }) {
   const updateLink = useProfile((s) => s.updateLink);
   const deleteLink = useProfile((s) => s.deleteLink);
@@ -32,16 +32,26 @@ function SortableLinkCard({ link }: { link: LinkType }) {
       <button {...attributes} {...listeners} className="cursor-grab text-brand-muted hover:text-brand-purple p-1">
         <GripVertical className="w-5 h-5" />
       </button>
-      <div className="w-12 h-12 rounded-xl bg-brand-bg flex items-center justify-center text-brand-purple border border-brand-border">
+      <div className="w-12 h-12 rounded-xl bg-brand-bg flex items-center justify-center text-brand-purple border border-brand-border shrink-0">
         <Icon className="w-6 h-6" />
       </div>
       <div className="flex-1 min-w-0">
-        <h4 className="font-bold text-sm text-brand-text truncate">{link.title}</h4>
-        <p className="text-xs text-brand-muted font-medium truncate">{link.url}</p>
+        <div className="flex items-center gap-2">
+           <h4 className="font-bold text-sm text-brand-text truncate">{link.title}</h4>
+           {link.featured && <Sparkles className="w-3 h-3 text-brand-purple" />}
+           {link.type !== 'standard' && (
+             <span className="text-[8px] font-bold bg-brand-bg text-brand-purple px-1.5 py-0.5 rounded border border-brand-purple/10 uppercase tracking-tighter">
+               {link.type}
+             </span>
+           )}
+        </div>
+        <p className="text-xs text-brand-muted font-medium truncate">{link.url || 'Embed/Widget'}</p>
         <div className="flex items-center gap-4 mt-1">
-          <span className="text-[10px] font-bold text-brand-muted flex items-center gap-1">
-            <Calendar className="w-3 h-3" /> Added recently
-          </span>
+          {link.schedule?.enabled && (
+             <span className="text-[10px] font-bold text-brand-purple flex items-center gap-1">
+               <Clock className="w-3 h-3" /> Scheduled
+             </span>
+          )}
         </div>
       </div>
       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -60,17 +70,11 @@ export function LinksEditor() {
   const reorderLinks = useProfile((s) => s.reorderLinks);
   const addLink = useProfile((s) => s.addLink);
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [search, setSearch] = useState('');
+  const [step, setStep] = useState<'type' | 'details'>('type');
   const [newLink, setNewLink] = useState<Omit<LinkType, 'id'>>({
-    title: '',
-    subtitle: '',
-    url: '',
-    icon: 'Globe',
-    active: true,
-    animation: 'none'
+    title: '', subtitle: '', url: '', icon: 'Globe', active: true, animation: 'none', type: 'standard'
   });
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
-  const filteredIcons = ICON_OPTIONS.filter(i => i.label.toLowerCase().includes(search.toLowerCase()));
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
@@ -82,50 +86,94 @@ export function LinksEditor() {
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addLink(newLink);
-    setNewLink({ title: '', subtitle: '', url: '', icon: 'Globe', active: true, animation: 'none' });
+    setNewLink({ title: '', subtitle: '', url: '', icon: 'Globe', active: true, animation: 'none', type: 'standard' });
+    setStep('type');
     setIsAddOpen(false);
+  };
+  const selectType = (typeId: LinkType['type']) => {
+    const icon = typeId === 'commerce' ? 'Commerce' : typeId === 'widget' ? 'Music2' : 'Globe';
+    setNewLink({ ...newLink, type: typeId, icon });
+    setStep('details');
   };
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 md:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-7 space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-3xl font-bold text-brand-text">Links</h1>
-            <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
+            <h1 className="text-3xl font-bold text-brand-text">Links & Modules</h1>
+            <Dialog open={isAddOpen} onOpenChange={(v) => { setIsAddOpen(v); if(!v) setStep('type'); }}>
               <DialogTrigger asChild>
                 <Button className="bg-brand-purple hover:bg-brand-purple/90 text-white rounded-xl px-6 h-12 shadow-lg shadow-brand-purple/20">
-                  <Plus className="w-4 h-4 mr-2" /> Add Link
+                  <Plus className="w-4 h-4 mr-2" /> New Entry
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-white text-brand-text sm:max-w-[425px] rounded-3xl p-8 max-h-[90vh] overflow-y-auto border-brand-border">
+              <DialogContent className="bg-white text-brand-text sm:max-w-[480px] rounded-3xl p-8 max-h-[90vh] overflow-y-auto border-brand-border">
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-bold text-brand-text">New Link</DialogTitle>
+                  <DialogTitle className="text-2xl font-bold text-brand-text">
+                    {step === 'type' ? 'Select Entry Type' : 'Configure Entry'}
+                  </DialogTitle>
                 </DialogHeader>
-                <form onSubmit={handleAddSubmit} className="space-y-4 pt-4">
-                  <div className="space-y-2">
-                    <Label className="font-bold text-xs uppercase tracking-wider text-brand-muted">Title</Label>
-                    <Input required value={newLink.title} onChange={(e) => setNewLink({ ...newLink, title: e.target.value })} placeholder="My Portfolio" className="h-12 rounded-xl border-brand-border bg-brand-bg text-brand-text" />
+                {step === 'type' ? (
+                  <div className="grid grid-cols-1 gap-4 pt-6">
+                    {LINK_TYPES.map(type => (
+                      <button 
+                        key={type.id} 
+                        onClick={() => selectType(type.id as any)}
+                        className="flex items-center gap-6 p-6 rounded-2xl border border-brand-border hover:border-brand-purple hover:bg-brand-bg transition-all group"
+                      >
+                        <div className="w-14 h-14 rounded-xl bg-brand-bg flex items-center justify-center text-brand-purple group-hover:scale-110 transition-transform">
+                           <type.icon className="w-6 h-6" />
+                        </div>
+                        <div className="text-left">
+                           <p className="font-bold text-brand-text uppercase tracking-widest text-sm">{type.name}</p>
+                           <p className="text-xs text-brand-muted font-medium">{type.desc}</p>
+                        </div>
+                      </button>
+                    ))}
                   </div>
-                  <div className="space-y-2">
-                    <Label className="font-bold text-xs uppercase tracking-wider text-brand-muted">URL</Label>
-                    <Input required value={newLink.url} onChange={(e) => setNewLink({ ...newLink, url: e.target.value })} placeholder="https://..." className="h-12 rounded-xl border-brand-border bg-brand-bg text-brand-text" />
-                  </div>
-                  <div className="space-y-4 pt-2">
-                    <Label className="font-bold text-xs uppercase tracking-wider text-brand-muted">Select Icon</Label>
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-muted" />
-                      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search icons..." className="pl-10 h-10 rounded-xl border-brand-border bg-brand-bg text-brand-text" />
+                ) : (
+                  <form onSubmit={handleAddSubmit} className="space-y-6 pt-4">
+                    <div className="space-y-2">
+                      <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Title</Label>
+                      <Input required value={newLink.title} onChange={(e) => setNewLink({ ...newLink, title: e.target.value })} placeholder="Entry Display Title" className="h-12 rounded-xl border-brand-border bg-brand-bg" />
                     </div>
-                    <div className="grid grid-cols-7 gap-2 h-40 overflow-y-auto p-2 border border-brand-border rounded-xl bg-brand-bg">
-                      {filteredIcons.map((i) => (
-                        <button key={i.id} type="button" onClick={() => setNewLink({ ...newLink, icon: i.id })} className={cn("aspect-square flex items-center justify-center rounded-lg border transition-all", newLink.icon === i.id ? "bg-brand-purple text-white border-brand-purple shadow-sm" : "hover:bg-white text-brand-muted border-transparent")}>
-                          <i.icon className="w-4 h-4" />
-                        </button>
-                      ))}
+                    {newLink.type === 'standard' && (
+                      <div className="space-y-2">
+                        <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Destination URL</Label>
+                        <Input required value={newLink.url} onChange={(e) => setNewLink({ ...newLink, url: e.target.value })} placeholder="https://..." className="h-12 rounded-xl border-brand-border bg-brand-bg" />
+                      </div>
+                    )}
+                    {newLink.type === 'commerce' && (
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Price</Label>
+                          <Input type="number" required onChange={(e) => setNewLink({ ...newLink, commerce: { ...newLink.commerce!, price: Number(e.target.value) } })} className="h-12 rounded-xl border-brand-border" />
+                        </div>
+                        <div className="space-y-2">
+                           <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Provider</Label>
+                           <select className="w-full h-12 rounded-xl border-brand-border px-4 text-sm font-bold bg-brand-bg" onChange={(e) => setNewLink({ ...newLink, commerce: { ...newLink.commerce!, provider: e.target.value as any } })}>
+                             {COMMERCE_PROVIDERS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+                           </select>
+                        </div>
+                      </div>
+                    )}
+                    {newLink.type === 'widget' && (
+                       <div className="space-y-2">
+                        <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Embed URL (Spotify/YT)</Label>
+                        <Input required onChange={(e) => setNewLink({ ...newLink, widget: { ...newLink.widget!, embedUrl: e.target.value } })} placeholder="Full iFrame/Embed URL" className="h-12 rounded-xl border-brand-border bg-brand-bg" />
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between p-4 bg-brand-bg rounded-xl border border-brand-border">
+                       <div className="space-y-1">
+                          <p className="font-bold text-xs text-brand-text">Featured Link</p>
+                          <p className="text-[10px] text-brand-muted uppercase">Spotlight this entry with animations</p>
+                       </div>
+                       <Switch checked={newLink.featured} onCheckedChange={(v) => setNewLink({ ...newLink, featured: v })} />
                     </div>
-                  </div>
-                  <Button type="submit" className="w-full h-12 bg-brand-purple text-white font-bold rounded-xl mt-4 shadow-lg shadow-brand-purple/20">Add to Profile</Button>
-                </form>
+                    <Button type="submit" className="w-full h-14 bg-brand-purple text-white font-bold rounded-xl mt-4 shadow-lg shadow-brand-purple/20 uppercase tracking-widest text-sm">Add to Atelier</Button>
+                    <Button variant="ghost" onClick={() => setStep('type')} className="w-full text-brand-muted text-xs font-bold uppercase tracking-widest">Back to Types</Button>
+                  </form>
+                )}
               </DialogContent>
             </Dialog>
           </div>
@@ -137,12 +185,6 @@ export function LinksEditor() {
                     <SortableLinkCard key={link.id} link={link} />
                   ))}
                 </AnimatePresence>
-                {links.length === 0 && (
-                  <div className="bg-white border-2 border-dashed border-brand-border rounded-3xl p-20 text-center space-y-4">
-                    <h3 className="font-bold text-brand-text">No links yet</h3>
-                    <Button onClick={() => setIsAddOpen(true)} className="bg-brand-purple text-white rounded-xl">Add First Link</Button>
-                  </div>
-                )}
               </div>
             </SortableContext>
           </DndContext>

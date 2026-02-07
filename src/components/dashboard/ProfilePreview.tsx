@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
 import { motion } from 'framer-motion';
+import { ShoppingCart, Play, Lock } from 'lucide-react';
 export function ProfilePreview() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
@@ -37,8 +38,14 @@ export function ProfilePreview() {
           <div className="absolute inset-0 pointer-events-none opacity-40">
             <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
           </div>
-          <motion.div
-            className="w-20 h-20 overflow-hidden mb-6 relative z-10 shadow-lg"
+          {/* Top Socials Preview */}
+          {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
+             <div className="mb-6 flex gap-2 p-1.5 rounded-full bg-black/20 border border-white/10 z-10">
+                {activeSocials.slice(0, 3).map(([key]) => <div key={key} className="w-2.5 h-2.5 rounded-full bg-white/40" />)}
+             </div>
+          )}
+          <div
+            className="w-20 h-20 overflow-hidden mb-6 relative z-10 shadow-lg shrink-0"
             style={{
               borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '24%' : '0%',
               borderColor: appearance.layout.avatarBorderColor,
@@ -47,51 +54,43 @@ export function ProfilePreview() {
             }}
           >
             <img src={avatar} className="w-full h-full object-cover" alt="Preview" />
-          </motion.div>
-          <div className="text-center relative z-10 space-y-2 mb-10 w-full" style={{ color: appearance.colors.profileText }}>
-            <h2 className="text-xl font-bold uppercase tracking-tight">{name || 'NAME'}</h2>
-            <p className="text-[10px] italic font-serif opacity-80">{tagline}</p>
           </div>
-          <div className="w-full relative z-10 space-y-3 mb-12">
-            {links.filter(l => l.active).slice(0, 5).map((link) => {
-              const IconData = ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0];
-              const Icon = IconData.icon;
-              return (
-                <div
-                  key={link.id}
-                  className={cn(
-                    "w-full flex items-center p-3 text-[10px] font-bold uppercase tracking-widest transition-all",
-                    appearance.buttonShape === 'sharp' ? 'rounded-none' :
-                    appearance.buttonShape === 'rounded' ? 'rounded-xl' : 'rounded-full'
-                  )}
-                  style={{
-                    backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
-                    color: appearance.colors.btnText,
-                    borderColor: appearance.colors.btnBorder,
-                    borderWidth: '1px',
-                    borderStyle: 'solid'
-                  }}
-                >
-                  <Icon className="w-3 h-3 mr-3" />
-                  <span className="truncate">{link.title}</span>
-                </div>
-              );
-            })}
+          <div className="text-center relative z-10 space-y-1 mb-8 w-full" style={{ color: appearance.colors.profileText }}>
+            <h2 className="text-xl font-bold uppercase tracking-tight leading-tight">{name || 'NAME'}</h2>
+            <p className="text-[9px] italic font-serif opacity-70">{tagline}</p>
           </div>
-          {/* Social Dock Preview */}
-          {activeSocials.length > 0 && (
+          <div className="w-full relative z-10 flex flex-col mb-10" style={{ gap: `${appearance.layout.buttonSpacing / 4}px` }}>
+            {links.filter(l => l.active).slice(0, 6).map((link) => (
+              <div
+                key={link.id}
+                className={cn(
+                  "w-full flex items-center p-2.5 text-[9px] font-bold uppercase tracking-widest transition-all",
+                  appearance.buttonShape === 'sharp' ? 'rounded-none' :
+                  appearance.buttonShape === 'rounded' ? 'rounded-xl' : 'rounded-full'
+                )}
+                style={{
+                  backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
+                  color: appearance.colors.btnText,
+                  borderColor: appearance.colors.btnBorder,
+                  borderWidth: '1px',
+                  borderStyle: 'solid'
+                }}
+              >
+                {link.type === 'commerce' ? <ShoppingCart className="w-2.5 h-2.5 mr-2" /> : link.type === 'widget' ? <Play className="w-2.5 h-2.5 mr-2" /> : <div className="w-2.5 h-2.5 bg-current/20 rounded-full mr-2" />}
+                <span className="truncate">{link.title}</span>
+              </div>
+            ))}
+          </div>
+          {/* Bottom Socials Preview */}
+          {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
             <div className="mt-auto relative z-10 pb-4">
               <div className="flex items-center gap-2 p-1.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10">
-                {activeSocials.slice(0, 4).map(([key]) => {
-                  let iconId = key.charAt(0).toUpperCase() + key.slice(1);
-                  if (key === 'email') iconId = 'Mail';
-                  if (key === 'tiktok') iconId = 'TikTok';
-                  const IconData = ICON_OPTIONS.find(i => i.id === iconId) || ICON_OPTIONS.find(i => i.id === 'Globe');
-                  const Icon = IconData?.icon || ICON_OPTIONS[0].icon;
-                  return <Icon key={key} className="w-3 h-3 text-white/60" />;
-                })}
+                {activeSocials.slice(0, 4).map(([key]) => <div key={key} className="w-2.5 h-2.5 rounded-full bg-white/40" />)}
               </div>
             </div>
+          )}
+          {!appearance.layout.hideBranding && (
+            <div className="mt-4 text-[7px] uppercase tracking-widest opacity-20 text-center font-bold relative z-10">OnyxBio Pro</div>
           )}
         </div>
         <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-4 bg-black rounded-full z-20" />

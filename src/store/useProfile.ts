@@ -7,7 +7,24 @@ export interface Link {
   url: string;
   icon: string;
   active: boolean;
-  animation: 'none' | 'fade' | 'slide' | 'bounce';
+  animation: 'none' | 'fade' | 'slide' | 'bounce' | 'pulse';
+  type: 'standard' | 'commerce' | 'widget';
+  featured?: boolean;
+  commerce?: {
+    price: number;
+    currency: string;
+    provider: 'stripe' | 'paypal' | 'buymeacoffee';
+    buttonText: string;
+  };
+  widget?: {
+    embedType: 'spotify' | 'youtube' | 'soundcloud' | 'twitch' | 'vimeo';
+    embedUrl: string;
+  };
+  schedule?: {
+    startAt?: string;
+    endAt?: string;
+    enabled: boolean;
+  };
 }
 export interface Socials {
   instagram: string;
@@ -36,11 +53,6 @@ export interface Appearance {
     angle: number;
     stops: { color: string; offset: number }[];
   };
-  bgImage?: {
-    url: string;
-    overlay: number;
-    blur: number;
-  };
   colors: {
     btnFill: string;
     btnText: string;
@@ -54,6 +66,9 @@ export interface Appearance {
     avatarBorderColor: string;
     buttonSpacing: number;
     containerWidth: number;
+    socialPosition: 'top' | 'bottom' | 'both';
+    socialIconStyle: 'minimal' | 'glass' | 'bold';
+    hideBranding: boolean;
   };
 }
 export interface CustomCode {
@@ -88,19 +103,37 @@ const DEFAULT_PROFILE_DATA: Omit<ProfileState, 'updateProfile' | 'addLink' | 'up
   bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE THE EXTRAORDINARY",
   avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
   links: [
-    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade' },
-    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true, animation: 'fade' },
+    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade', type: 'standard' },
+    { 
+      id: '2', 
+      title: 'LIMITED EDITION PRINT', 
+      subtitle: 'Premium Giclée on Museum Paper', 
+      url: 'https://shop.onyx.design', 
+      icon: 'ShoppingBag', 
+      active: true, 
+      animation: 'pulse', 
+      type: 'commerce',
+      featured: true,
+      commerce: { price: 250, currency: 'USD', provider: 'stripe', buttonText: 'Purchase Piece' }
+    },
+    {
+      id: '3',
+      title: 'CREATIVE PROCESS',
+      subtitle: 'Exclusive BTS Mix',
+      url: 'https://spotify.com',
+      icon: 'Music2',
+      active: true,
+      animation: 'fade',
+      type: 'widget',
+      widget: { embedType: 'spotify', embedUrl: 'https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M' }
+    }
   ],
   socials: {
     instagram: 'alexander_onyx',
     twitter: 'onyx_vision',
     linkedin: 'alexander-onyx',
     youtube: 'onyx_studio',
-    tiktok: 'onyx_official',
-    threads: 'onyx_vision',
-    snapchat: 'onyx_snap',
     email: 'hello@onyx.bio',
-    discord: 'onyx_collective',
     position: 'bottom',
   },
   appearance: {
@@ -131,6 +164,9 @@ const DEFAULT_PROFILE_DATA: Omit<ProfileState, 'updateProfile' | 'addLink' | 'up
       avatarBorderColor: '#c9a961',
       buttonSpacing: 12,
       containerWidth: 600,
+      socialPosition: 'bottom',
+      socialIconStyle: 'minimal',
+      hideBranding: false,
     }
   },
   customCode: {
@@ -169,7 +205,7 @@ export const useProfile: ProfileStore = create<ProfileState>()(
       resetProfile: () => set(DEFAULT_PROFILE_DATA as any),
     }),
     {
-      name: 'onyx-profile-storage-final-v1',
+      name: 'onyx-profile-storage-pro-v1',
     }
   )
 );

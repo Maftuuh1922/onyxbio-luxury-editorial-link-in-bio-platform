@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
 import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
 import { ColorPicker, FontSelector, ButtonStyleSelector, PatternPicker, GradientSelector } from '@/components/dashboard/StylePickers';
 import { ThemeGallery } from '@/components/dashboard/ThemeGallery';
 import { CodeEditor } from '@/components/dashboard/CodeEditor';
-import { UserCircle, Palette, Type, Layout, Code, Settings as SettingsIcon, Layers, LayoutGrid } from 'lucide-react';
+import { UserCircle, Palette, Type, Layout, Code, Layers, LayoutGrid, Crown, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BUTTON_SHAPES } from '@/lib/constants';
 export function AppearanceEditor() {
@@ -35,8 +36,8 @@ export function AppearanceEditor() {
                 { id: 'library', icon: LayoutGrid, label: 'Library' },
                 { id: 'profile', icon: UserCircle, label: 'Profile' },
                 { id: 'appearance', icon: Palette, label: 'Styles' },
-                { id: 'links', icon: Layout, label: 'Links' },
-                { id: 'code', icon: Code, label: 'Code' },
+                { id: 'layout', icon: Maximize2, label: 'Layout' },
+                { id: 'code', icon: Code, label: 'Pro Code' },
               ].map(tab => (
                 <TabsTrigger
                   key={tab.id}
@@ -55,15 +56,15 @@ export function AppearanceEditor() {
               <section className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm space-y-6">
                 <div className="space-y-2">
                   <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Display Name</Label>
-                  <Input value={name} onChange={(e) => updateProfile({ name: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl h-12 text-brand-text focus:ring-brand-purple/20" />
+                  <Input value={name} onChange={(e) => updateProfile({ name: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl h-12" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Tagline</Label>
-                  <Input value={tagline} onChange={(e) => updateProfile({ tagline: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl h-12 text-brand-text focus:ring-brand-purple/20" />
+                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Professional Tagline</Label>
+                  <Input value={tagline} onChange={(e) => updateProfile({ tagline: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl h-12" />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Bio</Label>
-                  <Textarea value={bio} onChange={(e) => updateProfile({ bio: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl min-h-[100px] text-brand-text focus:ring-brand-purple/20" />
+                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Biography</Label>
+                  <Textarea value={bio} onChange={(e) => updateProfile({ bio: e.target.value })} className="bg-brand-bg border-brand-border rounded-xl min-h-[100px]" />
                 </div>
               </section>
             </TabsContent>
@@ -95,7 +96,7 @@ export function AppearanceEditor() {
                   />
                 )}
                 <div className="pt-4">
-                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted mb-4 block font-bold">Cinematic Pattern</Label>
+                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted mb-4 block font-bold">Atmospheric Overlay</Label>
                   <PatternPicker
                     selected={appearance.bgPattern}
                     onSelect={(id) => updateAppearance({ bgPattern: id as any })}
@@ -104,20 +105,20 @@ export function AppearanceEditor() {
               </div>
               <div className="space-y-4">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold flex items-center gap-2">
-                  <Type className="w-3 h-3" /> Typography Engine
+                  <Type className="w-3 h-3" /> Typography Pairing (21+ Fonts)
                 </Label>
                 <FontSelector selected={appearance.fontPairId} onSelect={(id) => updateAppearance({ fontPairId: id })} />
               </div>
               <div className="space-y-6">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold">Button Architecture</Label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {BUTTON_SHAPES.map(shape => (
                     <button
                       key={shape.id}
                       onClick={() => updateAppearance({ buttonShape: shape.id as any })}
                       className={cn(
                         "p-4 rounded-xl border text-[10px] font-bold uppercase transition-all",
-                        appearance.buttonShape === shape.id ? "bg-brand-purple text-white border-brand-purple shadow-md shadow-brand-purple/10" : "bg-white border-brand-border text-brand-text hover:bg-brand-bg"
+                        appearance.buttonShape === shape.id ? "bg-brand-purple text-white border-brand-purple" : "bg-white border-brand-border text-brand-text hover:bg-brand-bg"
                       )}
                     >
                       {shape.name}
@@ -131,41 +132,49 @@ export function AppearanceEditor() {
                   onShadowChange={(v) => updateAppearance({ buttonShadow: v })}
                 />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 border-t border-brand-border">
-                <ColorPicker label="Primary Text" value={appearance.colors.profileText} onChange={(v) => handleColorChange('profileText', v)} />
-                <ColorPicker label="Button Fill" value={appearance.colors.btnFill} onChange={(v) => handleColorChange('btnFill', v)} />
-                <ColorPicker label="Button Text" value={appearance.colors.btnText} onChange={(v) => handleColorChange('btnText', v)} />
-                <ColorPicker label="Accent Glow" value={appearance.colors.accent} onChange={(v) => handleColorChange('accent', v)} />
-              </div>
             </TabsContent>
-            <TabsContent value="links" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <section className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm space-y-8">
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Button Spacing</Label>
-                    <span className="text-xs text-brand-purple font-bold">{appearance.layout.buttonSpacing}px</span>
+            <TabsContent value="layout" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+               <section className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm space-y-10">
+                  <div className="space-y-4">
+                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold block">Social Connection Position</Label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {(['top', 'bottom', 'both'] as const).map(pos => (
+                        <button
+                          key={pos}
+                          onClick={() => handleLayoutChange('socialPosition', pos)}
+                          className={cn(
+                            "px-4 py-3 rounded-xl border text-[10px] font-bold uppercase transition-all",
+                            appearance.layout.socialPosition === pos ? "bg-brand-purple text-white border-brand-purple" : "bg-brand-bg border-brand-border text-brand-muted hover:text-brand-text"
+                          )}
+                        >
+                          {pos}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <Slider
-                    value={[appearance.layout.buttonSpacing]}
-                    max={40}
-                    step={2}
-                    onValueChange={([v]) => handleLayoutChange('buttonSpacing', v)}
-                  />
-                </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Max Container Width</Label>
-                    <span className="text-xs text-brand-purple font-bold">{appearance.layout.containerWidth}px</span>
+                  <div className="flex items-center justify-between p-6 bg-brand-purple/5 border border-brand-purple/10 rounded-2xl">
+                    <div className="space-y-1">
+                       <p className="font-bold text-sm text-brand-text flex items-center gap-2">Hide OnyxBio Branding <Crown className="w-3 h-3 text-brand-purple" /></p>
+                       <p className="text-[10px] text-brand-muted uppercase">Premium White-Label Experience</p>
+                    </div>
+                    <Switch 
+                      checked={appearance.layout.hideBranding} 
+                      onCheckedChange={(v) => handleLayoutChange('hideBranding', v)} 
+                    />
                   </div>
-                  <Slider
-                    value={[appearance.layout.containerWidth]}
-                    min={400}
-                    max={800}
-                    step={20}
-                    onValueChange={([v]) => handleLayoutChange('containerWidth', v)}
-                  />
-                </div>
-              </section>
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Button Density</Label>
+                      <span className="text-xs text-brand-purple font-bold">{appearance.layout.buttonSpacing}px</span>
+                    </div>
+                    <Slider
+                      value={[appearance.layout.buttonSpacing]}
+                      max={60}
+                      step={4}
+                      onValueChange={([v]) => handleLayoutChange('buttonSpacing', v)}
+                    />
+                  </div>
+               </section>
             </TabsContent>
             <TabsContent value="code" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
               <CodeEditor />
