@@ -31,113 +31,114 @@ export function ProfilePreview() {
   const activeSocials = Object.entries(socials).filter(([k, v]) => v && k !== 'position');
   const iconStyle = appearance.layout.socialIconStyle || 'minimal';
   return (
-    <div className="sticky top-24 w-full max-w-[340px] mx-auto group">
-      {/* Phone Frame Container */}
-      <div className="relative w-full aspect-[9/18.5] max-h-[720px] bg-[#0f0f0f] rounded-[3.2rem] p-3 border-[10px] border-[#1a1a1a] shadow-2xl overflow-hidden ring-1 ring-white/5">
-        {/* Screen Content */}
+    <div className="sticky top-24 w-full max-w-[360px] mx-auto group">
+      {/* High-Fidelity Phone Frame: iPhone 15 Pro Ratio (390x844 approx) */}
+      <div className="relative w-full aspect-[390/844] bg-[#0f0f0f] rounded-[3.5rem] p-3 border-[12px] border-[#1a1a1a] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10">
+        {/* Screen Content Wrapper */}
         <div
-          className="w-full h-full rounded-[2.2rem] relative overflow-y-auto overflow-x-hidden pt-12 pb-8 px-6 flex flex-col items-center border border-white/5 scrollbar-hide"
+          className="w-full h-full rounded-[2.5rem] relative overflow-hidden flex flex-col border border-white/5"
           style={canvasStyle}
         >
-          {/* Background Layer */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <LuxuryBackground 
-              pattern={appearance.bgPattern} 
-              palettePrimary={appearance.colors.accent} 
-              previewMode 
+          {/* Background Layer - Full edge-to-edge */}
+          <div className="absolute inset-0 pointer-events-none">
+            <LuxuryBackground
+              pattern={appearance.bgPattern}
+              palettePrimary={appearance.colors.accent}
+              previewMode
             />
           </div>
-          {/* Social Icons - Top */}
-          {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
-             <div className={cn(
-               "mb-8 flex gap-2 p-2 rounded-full z-10",
-               iconStyle === 'bold' ? "bg-white shadow-sm" : "bg-black/20 backdrop-blur-md border border-white/10"
-             )}>
-                {activeSocials.slice(0, 4).map(([key]) => (
-                  <div key={key} className={cn(
-                    "w-3 h-3 rounded-full",
-                    iconStyle === 'bold' ? "bg-black/20" : "bg-white/40"
-                  )} />
-                ))}
-             </div>
-          )}
-          {/* Avatar Area */}
-          <div
-            className="w-24 h-24 overflow-hidden mb-6 relative z-10 shadow-xl shrink-0 transition-all duration-500"
-            style={{
-              borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '24%' : '0%',
-              borderColor: appearance.layout.avatarBorderColor,
-              borderWidth: `${appearance.layout.avatarBorderWidth}px`,
-              borderStyle: 'solid'
-            }}
-          >
-            <img src={avatar} className="w-full h-full object-cover" alt="Preview" />
-          </div>
-          {/* Identity Header */}
-          <div className="text-center relative z-10 space-y-2 mb-10 w-full" style={{ color: appearance.colors.profileText }}>
-            <h2 className="text-2xl font-bold uppercase tracking-tight leading-none break-words px-2">{name || 'NAME'}</h2>
-            <p className="text-[10px] italic font-serif opacity-70 tracking-wide line-clamp-2">{tagline}</p>
-          </div>
-          {/* Links Nav */}
-          <div className="w-full relative z-10 flex flex-col mb-12" style={{
-            gap: `${appearance.layout.buttonSpacing / 3}px`
-          }}>
-            {links.filter(l => l.active).slice(0, 8).map((link) => (
-              <motion.div
-                key={link.id}
-                animate={link.featured ? { scale: [1, 1.02, 1] } : {}}
-                transition={{ duration: 2, repeat: Infinity }}
-                className={cn(
-                  "w-full flex items-center justify-center p-3 text-[10px] font-bold uppercase tracking-widest transition-all relative overflow-hidden text-center",
-                  appearance.buttonShape === 'sharp' ? 'rounded-none' :
-                  appearance.buttonShape === 'rounded' ? 'rounded-xl' : 'rounded-full'
-                )}
-                style={{
-                  backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
-                  color: appearance.colors.btnText,
-                  borderColor: appearance.colors.btnBorder,
-                  borderWidth: '1px',
-                  borderStyle: 'solid',
-                  boxShadow: appearance.buttonShadow === 'hard' ? `4px 4px 0px ${appearance.colors.btnBorder}` : 'none'
-                }}
-              >
-                {link.featured && (
-                  <div className="absolute inset-0 bg-white/10 blur-sm pointer-events-none" />
-                )}
-                {link.type === 'commerce' ? (
-                  <ShoppingCart className="w-3 h-3 mr-2" />
-                ) : link.type === 'widget' ? (
-                  <Play className="w-3 h-3 mr-2" />
-                ) : (
-                  <div className="w-1.5 h-1.5 bg-current/40 rounded-full mr-2" />
-                )}
-                <span className="truncate relative z-10 px-1">{link.title}</span>
-              </motion.div>
-            ))}
-          </div>
-          {/* Social Icons - Bottom */}
-          {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
-            <div className="mt-auto relative z-10 pb-6">
-              <div className={cn(
-               "flex items-center gap-2 p-2 rounded-full backdrop-blur-md",
-               iconStyle === 'bold' ? "bg-white shadow-sm" : "bg-black/30 border border-white/10"
-              )}>
-                {activeSocials.slice(0, 4).map(([key]) => (
-                  <div key={key} className={cn(
-                    "w-3 h-3 rounded-full",
-                    iconStyle === 'bold' ? "bg-black/20" : "bg-white/40"
-                  )} />
-                ))}
-              </div>
+          {/* Scrolling Content Container */}
+          <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pt-16 pb-12 px-6 flex flex-col items-center">
+            {/* Social Icons - Top Safe Area */}
+            {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
+               <div className={cn(
+                 "mb-8 flex gap-2.5 p-2 rounded-full",
+                 iconStyle === 'bold' ? "bg-white shadow-lg" : "bg-black/20 backdrop-blur-md border border-white/10"
+               )}>
+                  {activeSocials.slice(0, 4).map(([key]) => (
+                    <div key={key} className={cn(
+                      "w-3.5 h-3.5 rounded-full",
+                      iconStyle === 'bold' ? "bg-black/10" : "bg-white/30"
+                    )} />
+                  ))}
+               </div>
+            )}
+            {/* Avatar Architecture */}
+            <div
+              className="w-24 h-24 overflow-hidden mb-6 relative shadow-2xl shrink-0 transition-all duration-700"
+              style={{
+                borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '28%' : '0%',
+                borderColor: appearance.layout.avatarBorderColor,
+                borderWidth: `${appearance.layout.avatarBorderWidth}px`,
+                borderStyle: 'solid'
+              }}
+            >
+              <img src={avatar} className="w-full h-full object-cover" alt="Preview" />
             </div>
-          )}
-          {/* Branding */}
-          {!appearance.layout.hideBranding && (
-            <div className="mt-2 text-[8px] uppercase tracking-[0.3em] opacity-30 text-center font-bold relative z-10">OnyxBio Pro</div>
-          )}
+            {/* Identity Header */}
+            <div className="text-center space-y-3 mb-10 w-full" style={{ color: appearance.colors.profileText }}>
+              <h2 className="text-3xl font-bold uppercase tracking-tighter leading-none break-words px-2">{name || 'NAME'}</h2>
+              <p className="text-[11px] italic font-serif opacity-80 tracking-wide line-clamp-3 leading-relaxed max-w-[200px] mx-auto">{tagline}</p>
+            </div>
+            {/* Links Ecosystem */}
+            <div className="w-full flex flex-col mb-10" style={{
+              gap: `${appearance.layout.buttonSpacing / 2}px`
+            }}>
+              {links.filter(l => l.active).slice(0, 10).map((link) => (
+                <motion.div
+                  key={link.id}
+                  className={cn(
+                    "w-full flex items-center justify-center p-4 text-[10px] font-bold uppercase tracking-[0.15em] transition-all relative overflow-hidden text-center",
+                    appearance.buttonShape === 'sharp' ? 'rounded-none' :
+                    appearance.buttonShape === 'rounded' ? 'rounded-2xl' : 'rounded-full'
+                  )}
+                  style={{
+                    backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
+                    color: appearance.colors.btnText,
+                    borderColor: appearance.colors.btnBorder,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    boxShadow: appearance.buttonShadow === 'hard' ? `4px 4px 0px ${appearance.colors.btnBorder}` : 'none'
+                  }}
+                >
+                  {link.featured && (
+                    <div className="absolute inset-0 bg-white/20 blur-md pointer-events-none" />
+                  )}
+                  <div className="flex items-center gap-2 relative z-10 px-2 truncate">
+                    {link.type === 'commerce' ? <ShoppingCart className="w-3 h-3" /> : link.type === 'widget' ? <Play className="w-3 h-3" /> : null}
+                    <span className="truncate">{link.title}</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            {/* Social Icons - Bottom */}
+            {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
+              <div className="mt-auto">
+                <div className={cn(
+                 "flex items-center gap-2.5 p-2 rounded-full backdrop-blur-md",
+                 iconStyle === 'bold' ? "bg-white shadow-xl" : "bg-black/30 border border-white/10"
+                )}>
+                  {activeSocials.slice(0, 4).map(([key]) => (
+                    <div key={key} className={cn(
+                      "w-3.5 h-3.5 rounded-full",
+                      iconStyle === 'bold' ? "bg-black/10" : "bg-white/30"
+                    )} />
+                  ))}
+                </div>
+              </div>
+            )}
+            {/* Branding Indicator */}
+            {!appearance.layout.hideBranding && (
+              <div className="mt-8 text-[8px] uppercase tracking-[0.5em] opacity-30 text-center font-bold">OnyxBio Pro</div>
+            )}
+          </div>
         </div>
-        {/* Dynamic Island / Notch */}
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#0a0a0a] rounded-full z-20 border border-white/5 shadow-inner" />
+        {/* Dynamic Island / Hardware Notch */}
+        <div className="absolute top-5 left-1/2 -translate-x-1/2 w-28 h-7 bg-[#0a0a0a] rounded-[1rem] z-30 border border-white/5 shadow-inner flex items-center justify-end px-3">
+           <div className="w-2 h-2 rounded-full bg-blue-500/20" />
+        </div>
+        {/* Home Indicator */}
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 w-32 h-1.5 bg-white/10 rounded-full z-30" />
       </div>
     </div>
   );
