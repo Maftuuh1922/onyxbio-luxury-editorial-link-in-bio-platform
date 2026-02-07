@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { cn } from '@/lib/utils';
 const curators = [
   { name: 'Elena Vance', role: 'Digital Artist', img: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&h=600&fit=crop', size: 'lg' },
   { name: 'Mark S.', role: 'Curator', img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&h=400&fit=crop', size: 'sm' },
@@ -25,10 +24,10 @@ export function LandingShowcase() {
                 curator.size === 'lg' ? 'md:col-span-2 md:row-span-2' : curator.size === 'wide' ? 'md:col-span-2' : ''
               )}
             >
-              <img
-                src={curator.img}
-                alt={curator.name}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              <img 
+                src={curator.img} 
+                alt={curator.name} 
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8">
@@ -41,4 +40,7 @@ export function LandingShowcase() {
       </div>
     </div>
   );
+}
+function cn(...inputs: any[]) {
+  return inputs.filter(Boolean).join(' ');
 }

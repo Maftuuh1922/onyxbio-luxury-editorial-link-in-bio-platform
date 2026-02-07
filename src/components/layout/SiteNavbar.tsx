@@ -11,49 +11,75 @@ export function SiteNavbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+  const navLinks = [
+    { name: 'Features', href: '#features' },
+    { name: 'Pricing', href: '#pricing' },
+    { name: 'Showcase', href: '#showcase' },
+    { name: 'FAQ', href: '#faq' },
+  ];
   return (
     <nav className={cn(
-      "fixed top-0 left-0 right-0 z-[100] transition-all duration-500 border-b",
-      isScrolled ? "bg-onyx-dark/80 backdrop-blur-md border-white/5 py-3" : "bg-transparent border-transparent py-6"
+      "fixed top-0 left-0 right-0 z-[100] transition-all duration-500",
+      isScrolled 
+        ? "bg-black/40 backdrop-blur-xl border-b border-white/10 py-4" 
+        : "bg-transparent py-6"
     )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <Link to="/" className="font-ornament text-onyx-gold text-2xl tracking-[0.4em] hover:opacity-80 transition-opacity">
-          ONYXBIO
+        {/* Left: Logo */}
+        <Link to="/" className="font-space font-bold text-white text-2xl tracking-tight hover:opacity-80 transition-opacity">
+          Onyx<span className="text-landing-purple-hero">Bio</span>
         </Link>
-        {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-10">
-          {['Features', 'Pricing', 'Curators'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} className="font-ornament text-[0.7rem] tracking-[0.3em] uppercase text-onyx-gray hover:text-onyx-gold transition-colors">
-              {item}
+        {/* Center: Desktop Nav */}
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href} 
+              className="font-space text-sm font-medium text-white/70 hover:text-white transition-colors"
+            >
+              {link.name}
             </a>
           ))}
-          <div className="h-4 w-[1px] bg-white/10 mx-2" />
-          <Link to="/login" className="font-ornament text-[0.7rem] tracking-[0.3em] uppercase text-onyx-white hover:text-onyx-gold transition-colors">
+        </div>
+        {/* Right: Auth Buttons */}
+        <div className="hidden md:flex items-center gap-4">
+          <Link to="/login" className="font-space text-sm font-medium text-white/70 hover:text-white px-4 py-2 transition-colors">
             Login
           </Link>
-          <Button asChild className="bg-onyx-gold hover:bg-onyx-gold-light text-onyx-dark font-ornament tracking-widest text-xs px-6 py-2 rounded-none">
-            <Link to="/register">JOIN NOW</Link>
+          <Button asChild className="bg-white text-black hover:bg-white/90 font-space font-bold text-sm px-6 py-2 rounded-full transition-all hover:scale-105 active:scale-95">
+            <Link to="/register">Sign Up Free</Link>
           </Button>
         </div>
         {/* Mobile Toggle */}
-        <button className="md:hidden text-onyx-gold" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          {mobileMenuOpen ? <X /> : <Menu />}
+        <button className="md:hidden text-white p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-onyx-dark/95 backdrop-blur-xl border-b border-white/5 p-8 flex flex-col items-center gap-8 md:hidden">
-          {['Features', 'Pricing', 'Curators'].map((item) => (
-            <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMobileMenuOpen(false)} className="font-ornament tracking-[0.3em] uppercase text-onyx-white text-lg">
-              {item}
+        <div className="absolute top-0 left-0 right-0 h-screen bg-landing-purple-hero z-[-1] p-8 pt-24 flex flex-col gap-8 md:hidden animate-in slide-in-from-top duration-300">
+          {navLinks.map((link) => (
+            <a 
+              key={link.name} 
+              href={link.href} 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="font-space font-bold text-3xl text-white"
+            >
+              {link.name}
             </a>
           ))}
-          <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="font-ornament tracking-[0.3em] uppercase text-onyx-gold text-lg">
-            Login
-          </Link>
-          <Button asChild className="w-full bg-onyx-gold text-onyx-dark font-ornament tracking-widest py-6 rounded-none">
-            <Link to="/register">JOIN NOW</Link>
-          </Button>
+          <div className="mt-auto flex flex-col gap-4">
+            <Link 
+              to="/login" 
+              onClick={() => setMobileMenuOpen(false)} 
+              className="font-space font-bold text-2xl text-white/80"
+            >
+              Login
+            </Link>
+            <Button asChild className="w-full bg-white text-black font-space font-bold text-lg py-8 rounded-2xl">
+              <Link to="/register">Get Started</Link>
+            </Button>
+          </div>
         </div>
       )}
     </nav>
