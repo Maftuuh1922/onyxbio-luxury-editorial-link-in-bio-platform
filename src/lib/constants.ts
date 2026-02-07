@@ -1,10 +1,10 @@
-import { 
-  Globe, Instagram, Mail, Twitter, Youtube, Linkedin, 
-  ShoppingBag, Camera, Music, Video, MapPin, 
-  Link as LinkIcon, Heart, Star, Briefcase, Zap, 
-  Send, MessageCircle, Phone, Github, Figma, 
-  Twitch, Discord, Slack, Dribbble, ExternalLink,
-  Smartphone, User
+import {
+  Globe, Instagram, Mail, Twitter, Youtube, Linkedin,
+  ShoppingBag, Camera, Music, Video, MapPin,
+  Link as LinkIcon, Heart, Star, Briefcase, Zap,
+  Send, MessageCircle, Phone, Github, Figma,
+  Twitch, Slack, Dribbble, ExternalLink,
+  Smartphone, User, MessageSquare
 } from 'lucide-react';
 export const COLOR_PALETTES = [
   { id: 'imperial-gold', name: 'Imperial Gold', primary: '#D4AF37', secondary: '#0a0a0a' },
@@ -38,7 +38,7 @@ export const ICON_OPTIONS = [
   { id: 'Github', icon: Github, label: 'GitHub' },
   { id: 'Figma', icon: Figma, label: 'Design' },
   { id: 'Twitch', icon: Twitch, label: 'Twitch' },
-  { id: 'Discord', icon: Discord, label: 'Discord' },
+  { id: 'Discord', icon: MessageSquare, label: 'Discord' },
   { id: 'Slack', icon: Slack, label: 'Slack' },
   { id: 'Dribbble', icon: Dribbble, label: 'Dribbble' },
   { id: 'ExternalLink', icon: ExternalLink, label: 'External' },

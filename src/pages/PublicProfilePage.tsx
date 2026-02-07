@@ -16,6 +16,7 @@ const getSocialUrl = (platform: string, handle: string) => {
     case 'linkedin': return `https://linkedin.com/in/${h}`;
     case 'youtube': return `https://youtube.com/@${h}`;
     case 'email': return `mailto:${h}`;
+    case 'discord': return h.startsWith('https://') ? h : `https://discord.gg/${h}`;
     default: return h;
   }
 };
@@ -63,7 +64,7 @@ export function PublicProfilePage() {
   const shape = BUTTON_SHAPES.find(b => b.id === displayProfile.appearance.buttonShape) || BUTTON_SHAPES[0];
   return (
     <div className={cn("relative min-h-screen bg-onyx-dark text-onyx-white selection:bg-onyx-gold selection:text-onyx-dark overflow-x-hidden", font.class)}>
-      <LuxuryBackground pattern={displayProfile.appearance.bgPattern as any} palettePrimary={palette.primary} />
+      <LuxuryBackground pattern={displayProfile.appearance.bgPattern as 'dust' | 'grid' | 'constellation'} palettePrimary={palette.primary} />
       <main className="relative z-10 max-w-[680px] mx-auto px-6 py-16 md:py-24 space-y-16 pb-40">
         <header className="flex flex-col items-center text-center space-y-8">
           <motion.div
@@ -79,14 +80,20 @@ export function PublicProfilePage() {
             animate={{ opacity: 1, scale: 1 }}
             className="relative w-[160px] h-[160px] rounded-full p-[3px] bg-white/10 backdrop-blur-md overflow-hidden border border-white/10"
           >
-            <img src={displayProfile.avatar} alt={displayProfile.name} className="w-full h-full object-cover rounded-full grayscale-[0.2]" />
+            <img 
+              src={displayProfile.avatar} 
+              alt={displayProfile.name} 
+              className="w-full h-full object-cover rounded-full grayscale-[0.2]" 
+            />
           </motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-4">
             <h1 className="font-display text-4xl md:text-6xl uppercase tracking-tight" style={{ color: palette.primary }}>
               {displayProfile.name}
             </h1>
             <p className="text-onyx-white italic text-xl md:text-2xl font-serif">{displayProfile.tagline}</p>
-            <p className="text-onyx-gray text-[0.8rem] tracking-[0.4em] uppercase font-ornament max-w-sm mx-auto leading-relaxed">{displayProfile.bio}</p>
+            <p className="text-onyx-gray text-[0.8rem] tracking-[0.4em] uppercase font-ornament max-w-sm mx-auto leading-relaxed">
+              {displayProfile.bio}
+            </p>
           </motion.div>
         </header>
         <nav className="space-y-5">
@@ -99,9 +106,9 @@ export function PublicProfilePage() {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + (idx * 0.1) }}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 + (idx * 0.08), ease: "easeOut" }}
                 className={cn("glass-card shimmer-trigger block p-6 md:p-8 group", shape.class)}
               >
                 <div className="flex items-center justify-between relative z-10">
@@ -124,11 +131,10 @@ export function PublicProfilePage() {
             <div className="font-ornament tracking-[0.8em] text-sm opacity-30 select-none" style={{ color: palette.primary }}>✦ ONYXBIO ◆</div>
         </footer>
       </main>
-      {/* Floating Social Dock */}
       <motion.div
         initial={{ y: 100, x: '-50%', opacity: 0 }}
         animate={{ y: 0, x: '-50%', opacity: 1 }}
-        transition={{ delay: 1, type: 'spring' }}
+        transition={{ delay: 0.8, type: 'spring', damping: 20 }}
         className="fixed bottom-10 left-1/2 z-[100]"
       >
         <div className={cn(

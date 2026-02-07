@@ -14,6 +14,7 @@ export interface Socials {
   linkedin: string;
   youtube: string;
   email: string;
+  discord?: string;
 }
 export interface Appearance {
   themeId: string;
@@ -25,14 +26,14 @@ export interface Appearance {
 const DEFAULT_PROFILE = {
   name: "ALEXANDER ONYX",
   tagline: "Visual Storyteller & Digital Architect",
-  bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE",
+  bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE THE EXTRAORDINARY",
   avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
   links: [
-    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true },
-    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the process', url: 'https://instagram.com', icon: 'Instagram', active: true },
+    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true },
+    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true },
     { id: '3', title: 'GET IN TOUCH', subtitle: 'Inquiries for collaborative excellence', url: 'mailto:hello@onyx.bio', icon: 'Mail', active: true },
-    { id: '4', title: 'YOUTUBE', subtitle: 'Visual essays and motion design', url: 'https://youtube.com', icon: 'Youtube', active: true },
-    { id: '5', title: 'SHOP', subtitle: 'Limited edition physical prints', url: 'https://shop.onyx.bio', icon: 'ShoppingBag', active: true },
+    { id: '4', title: 'YOUTUBE', subtitle: 'Visual essays and motion design showcase', url: 'https://youtube.com', icon: 'Youtube', active: true },
+    { id: '5', title: 'CONCEPT SHOP', subtitle: 'Limited edition physical prints and artifacts', url: 'https://shop.onyx.bio', icon: 'ShoppingBag', active: true },
   ],
   socials: {
     instagram: 'alexander_onyx',
@@ -40,6 +41,7 @@ const DEFAULT_PROFILE = {
     linkedin: 'alexander-onyx',
     youtube: 'onyx_studio',
     email: 'hello@onyx.bio',
+    discord: 'onyx_collective'
   },
   appearance: {
     themeId: 'onyx-gold',

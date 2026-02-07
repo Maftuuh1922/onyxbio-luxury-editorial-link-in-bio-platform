@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
@@ -12,19 +11,19 @@ export function ProfilePreview() {
   const links = useProfile(s => s.links);
   const socials = useProfile(s => s.socials);
   const appearance = useProfile(s => s.appearance);
-  const activePalette = useMemo(() => 
+  const activePalette = useMemo(() =>
     COLOR_PALETTES.find(p => p.id === appearance.paletteId) || COLOR_PALETTES[0],
   [appearance.paletteId]);
-  const activeFont = useMemo(() => 
+  const activeFont = useMemo(() =>
     FONT_FAMILIES.find(f => f.id === appearance.fontPairId) || FONT_FAMILIES[0],
   [appearance.fontPairId]);
-  const activeButtonShape = useMemo(() => 
+  const activeButtonShape = useMemo(() =>
     BUTTON_SHAPES.find(b => b.id === appearance.buttonShape) || BUTTON_SHAPES[0],
   [appearance.buttonShape]);
   return (
     <div className="sticky top-24 border border-white/10 rounded-[3rem] p-4 bg-onyx-dark shadow-[0_0_50px_-12px_rgba(201,169,97,0.15)] overflow-hidden aspect-[9/18.5] w-full max-w-[320px] mx-auto group">
       <div className={cn("w-full h-full rounded-[2.5rem] bg-onyx-dark relative overflow-y-auto overflow-x-hidden flex flex-col items-center py-10 px-6 border border-white/5", activeFont.class)}>
-        <div className="absolute inset-0 pointer-events-none opacity-40">
+        <div className="absolute inset-0 pointer-events-none opacity-50">
           <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={activePalette.primary} />
         </div>
         {/* Avatar */}
@@ -53,26 +52,26 @@ export function ProfilePreview() {
               <div
                 key={link.id}
                 className={cn(
-                  "w-full bg-white/[0.03] backdrop-blur-md border border-white/10 flex items-center p-3 transition-colors hover:bg-white/[0.08]",
+                  "w-full bg-white/[0.03] backdrop-blur-md border border-white/10 flex items-center p-3 transition-all hover:bg-white/[0.08]",
                   activeButtonShape.class
                 )}
               >
-                <Icon className="w-3 h-3 mr-3" style={{ color: activePalette.primary }} />
+                <Icon className="w-3 h-3 mr-3 shrink-0" style={{ color: activePalette.primary }} />
                 <span className="text-[9px] font-ornament uppercase tracking-widest text-onyx-white truncate">{link.title}</span>
               </div>
             );
           })}
         </div>
-        {/* Socials & Brand */}
-        <div className={cn("flex gap-4 relative z-10 mt-auto pb-4 px-6 py-3 bg-white/5 border border-white/10 backdrop-blur-lg", activeButtonShape.class)}>
+        {/* Social Dock Sync */}
+        <div className={cn("mt-auto w-fit px-6 py-3 bg-onyx-dark/80 backdrop-blur-3xl border border-white/10 flex items-center gap-4 shadow-xl relative z-10", activeButtonShape.class)}>
           {Object.entries(socials).filter(([_, v]) => v).slice(0, 5).map(([k]) => {
             const iconKey = k === 'email' ? 'Mail' : k.charAt(0).toUpperCase() + k.slice(1);
             const IconData = ICON_OPTIONS.find(i => i.id === iconKey) || ICON_OPTIONS[0];
             const Icon = IconData.icon;
-            return <Icon key={k} className="w-4 h-4 opacity-70 hover:opacity-100 transition-opacity" style={{ color: activePalette.primary }} />
+            return <Icon key={k} className="w-3.5 h-3.5 opacity-80" style={{ color: activePalette.primary }} />
           })}
         </div>
-        <div className="text-[8px] tracking-[0.4em] opacity-30 uppercase relative z-10 mt-2" style={{ color: activePalette.primary }}>◆ ONYXBIO ◆</div>
+        <div className="text-[8px] tracking-[0.4em] opacity-30 uppercase relative z-10 mt-3" style={{ color: activePalette.primary }}>◆ ONYXBIO ◆</div>
       </div>
       {/* Device Notch */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 w-20 h-5 bg-onyx-dark rounded-full border border-white/10 z-20" />
