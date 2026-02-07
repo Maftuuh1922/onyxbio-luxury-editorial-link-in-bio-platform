@@ -1,28 +1,60 @@
 import '@/lib/errorReporter';
 import { enableMapSet } from "immer";
 enableMapSet();
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate,
 } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { RouteErrorBoundary } from '@/components/RouteErrorBoundary';
-import '@/index.css'
-import { HomePage } from '@/pages/HomePage'
-
+import '@/index.css';
+// Pages
+import { HomePage } from '@/pages/HomePage';
+import { AuthPage } from '@/pages/AuthPage';
+import { PublicProfilePage } from '@/pages/PublicProfilePage';
+import { DashboardOverview } from '@/pages/dashboard/DashboardOverview';
+// Layouts
+import { DashboardLayout } from '@/components/layout/DashboardLayout';
 const queryClient = new QueryClient();
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <HomePage />,
     errorElement: <RouteErrorBoundary />,
   },
+  {
+    path: "/login",
+    element: <AuthPage mode="login" />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/register",
+    element: <AuthPage mode="register" />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    errorElement: <RouteErrorBoundary />,
+    children: [
+      { index: true, element: <Navigate to="/dashboard/overview" replace /> },
+      { path: "overview", element: <DashboardOverview /> },
+      { path: "links", element: <div className="p-8">Links Management (Coming Soon)</div> },
+      { path: "appearance", element: <div className="p-8">Appearance Editor (Coming Soon)</div> },
+      { path: "analytics", element: <div className="p-8">Detailed Analytics (Coming Soon)</div> },
+      { path: "settings", element: <div className="p-8">Account Settings (Coming Soon)</div> },
+    ]
+  },
+  {
+    path: "/:username",
+    element: <PublicProfilePage />,
+    errorElement: <RouteErrorBoundary />,
+  },
 ]);
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
@@ -31,5 +63,4 @@ createRoot(document.getElementById('root')!).render(
       </ErrorBoundary>
     </QueryClientProvider>
   </StrictMode>,
-)
-   
+);

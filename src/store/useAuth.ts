@@ -1,4 +1,4 @@
-import { create, UseBoundStore, StoreApi } from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 interface User {
   id: string;
@@ -17,8 +17,7 @@ interface AuthState {
   logout: () => void;
   setPlan: (plan: Plan) => void;
 }
-type AuthStore = UseBoundStore<StoreApi<AuthState>>;
-export const useAuth: AuthStore = create<AuthState>()(
+export const useAuth = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
