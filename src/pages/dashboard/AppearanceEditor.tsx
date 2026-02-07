@@ -10,9 +10,9 @@ import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
 import { ColorPicker, FontSelector, ButtonStyleSelector, PatternPicker, GradientSelector } from '@/components/dashboard/StylePickers';
 import { ThemeGallery } from '@/components/dashboard/ThemeGallery';
 import { CodeEditor } from '@/components/dashboard/CodeEditor';
-import { UserCircle, Palette, Type, Layout, Code, Layers, LayoutGrid, Crown, Maximize2 } from 'lucide-react';
+import { UserCircle, Palette, Type, Layers, LayoutGrid, Crown, Maximize2, Code, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { BUTTON_SHAPES } from '@/lib/constants';
+import { BUTTON_SHAPES, SOCIAL_STYLES } from '@/lib/constants';
 export function AppearanceEditor() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
@@ -95,22 +95,27 @@ export function AppearanceEditor() {
                     onSelect={(stops) => updateAppearance({ bgGradient: { ...appearance.bgGradient, stops } })}
                   />
                 )}
-                <div className="pt-4">
-                  <Label className="text-[10px] uppercase tracking-widest text-brand-muted mb-4 block font-bold">Atmospheric Overlay</Label>
-                  <PatternPicker
-                    selected={appearance.bgPattern}
-                    onSelect={(id) => updateAppearance({ bgPattern: id as any })}
-                  />
+                <div className="pt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted mb-4 block font-bold">Atmospheric Overlay</Label>
+                    <PatternPicker
+                      selected={appearance.bgPattern}
+                      onSelect={(id) => updateAppearance({ bgPattern: id as any })}
+                    />
+                  </div>
+                  <div className="space-y-4">
+                    <ColorPicker label="Accent Color (Widgets)" value={appearance.colors.accent} onChange={(v) => handleColorChange('accent', v)} />
+                  </div>
                 </div>
               </div>
               <div className="space-y-4">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold flex items-center gap-2">
-                  <Type className="w-3 h-3" /> Typography Pairing (21+ Fonts)
+                  <Type className="w-3 h-3" /> Typography Pairing
                 </Label>
                 <FontSelector selected={appearance.fontPairId} onSelect={(id) => updateAppearance({ fontPairId: id })} />
               </div>
               <div className="space-y-6">
-                <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold">Button Architecture</Label>
+                <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold">Button & Component Styles</Label>
                 <div className="grid grid-cols-3 gap-2">
                   {BUTTON_SHAPES.map(shape => (
                     <button
@@ -136,42 +141,65 @@ export function AppearanceEditor() {
             <TabsContent value="layout" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
                <section className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm space-y-10">
                   <div className="space-y-4">
-                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold block">Social Connection Position</Label>
+                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold block flex items-center gap-2">
+                      <Share2 className="w-3 h-3" /> Social Connection Style
+                    </Label>
                     <div className="grid grid-cols-3 gap-2">
-                      {(['top', 'bottom', 'both'] as const).map(pos => (
+                      {SOCIAL_STYLES.map(style => (
                         <button
-                          key={pos}
-                          onClick={() => handleLayoutChange('socialPosition', pos)}
+                          key={style.id}
+                          onClick={() => handleLayoutChange('socialIconStyle', style.id)}
                           className={cn(
                             "px-4 py-3 rounded-xl border text-[10px] font-bold uppercase transition-all",
-                            appearance.layout.socialPosition === pos ? "bg-brand-purple text-white border-brand-purple" : "bg-brand-bg border-brand-border text-brand-muted hover:text-brand-text"
+                            appearance.layout.socialIconStyle === style.id ? "bg-brand-purple text-white border-brand-purple" : "bg-brand-bg border-brand-border text-brand-muted hover:text-brand-text"
                           )}
                         >
-                          {pos}
+                          {style.name}
                         </button>
                       ))}
                     </div>
                   </div>
+                  <div className="space-y-6 border-t border-brand-border pt-8">
+                    <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold block">Avatar Architecture</Label>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <ColorPicker label="Avatar Border Color" value={appearance.layout.avatarBorderColor} onChange={(v) => handleLayoutChange('avatarBorderColor', v)} />
+                      <div className="space-y-4">
+                        <div className="flex justify-between">
+                          <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Border Width</Label>
+                          <span className="text-xs font-bold text-brand-purple">{appearance.layout.avatarBorderWidth}px</span>
+                        </div>
+                        <Slider
+                          value={[appearance.layout.avatarBorderWidth]}
+                          max={8}
+                          step={1}
+                          onValueChange={([v]) => handleLayoutChange('avatarBorderWidth', v)}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-6 border-t border-brand-border pt-8">
+                    <div className="space-y-4">
+                      <div className="flex justify-between">
+                        <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Editorial Canvas Width</Label>
+                        <span className="text-xs text-brand-purple font-bold">{appearance.layout.containerWidth}px</span>
+                      </div>
+                      <Slider
+                        value={[appearance.layout.containerWidth]}
+                        min={400}
+                        max={800}
+                        step={20}
+                        onValueChange={([v]) => handleLayoutChange('containerWidth', v)}
+                      />
+                    </div>
+                  </div>
                   <div className="flex items-center justify-between p-6 bg-brand-purple/5 border border-brand-purple/10 rounded-2xl">
                     <div className="space-y-1">
-                       <p className="font-bold text-sm text-brand-text flex items-center gap-2">Hide OnyxBio Branding <Crown className="w-3 h-3 text-brand-purple" /></p>
-                       <p className="text-[10px] text-brand-muted uppercase">Premium White-Label Experience</p>
+                       <p className="font-bold text-sm text-brand-text flex items-center gap-2">White-Label Mode <Crown className="w-3 h-3 text-brand-purple" /></p>
+                       <p className="text-[10px] text-brand-muted uppercase">Remove OnyxBio watermark</p>
                     </div>
-                    <Switch 
-                      checked={appearance.layout.hideBranding} 
-                      onCheckedChange={(v) => handleLayoutChange('hideBranding', v)} 
-                    />
-                  </div>
-                  <div className="space-y-4">
-                    <div className="flex justify-between">
-                      <Label className="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Button Density</Label>
-                      <span className="text-xs text-brand-purple font-bold">{appearance.layout.buttonSpacing}px</span>
-                    </div>
-                    <Slider
-                      value={[appearance.layout.buttonSpacing]}
-                      max={60}
-                      step={4}
-                      onValueChange={([v]) => handleLayoutChange('buttonSpacing', v)}
+                    <Switch
+                      checked={appearance.layout.hideBranding}
+                      onCheckedChange={(v) => handleLayoutChange('hideBranding', v)}
                     />
                   </div>
                </section>

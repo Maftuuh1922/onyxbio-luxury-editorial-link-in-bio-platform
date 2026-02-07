@@ -1,9 +1,8 @@
 import {
   Globe, Instagram, Mail, Twitter, Youtube, Linkedin,
   ShoppingBag, Camera, Music2, AtSign, Ghost, Share2,
-  Code, MessageCircle, CreditCard, Play, Podcast, Twitch, Video
+  Code, CreditCard, Play, Podcast, Twitch, Video, Discord
 } from 'lucide-react';
-import { Appearance } from '@/store/useProfile';
 export const SYSTEM_FONTS = [
   { id: 'arial', name: 'Arial', family: 'Arial, sans-serif' },
   { id: 'georgia', name: 'Georgia', family: 'Georgia, serif' },
@@ -33,15 +32,47 @@ export const GOOGLE_FONTS = [
   { id: 'crimson', name: 'Bookish Text', family: '"Crimson Pro", serif' }
 ];
 export const LINK_TYPES = [
-  { id: 'standard', name: 'Standard Link', icon: Globe, desc: 'Classic URL button' },
-  { id: 'commerce', name: 'Commerce & Shop', icon: CreditCard, desc: 'Sell products or collect donations' },
-  { id: 'widget', name: 'Multimedia Widget', icon: Play, desc: 'Embed Spotify, YouTube, or Twitch' }
+  { id: 'standard', name: 'Standard Link', icon: Globe, desc: 'Classic URL button for external navigation' },
+  { id: 'commerce', name: 'Commerce & Shop', icon: CreditCard, desc: 'Sell products, services or collect tips' },
+  { id: 'widget', name: 'Multimedia Widget', icon: Play, desc: 'Directly embed Spotify, YouTube, or Twitch' }
 ];
-export const CURRENCY_OPTIONS = [
-  { code: 'USD', symbol: '$' },
-  { code: 'EUR', symbol: '€' },
-  { code: 'GBP', symbol: '£' },
-  { code: 'JPY', symbol: '¥' }
+export const SOCIAL_STYLES = [
+  { id: 'minimal', name: 'Minimal', desc: 'Floating translucent bar' },
+  { id: 'glass', name: 'Glass', desc: 'Frosted icons with borders' },
+  { id: 'bold', name: 'Bold', desc: 'High-contrast light bar' },
+] as const;
+export const ICON_OPTIONS = [
+  { id: 'Globe', icon: Globe, label: 'Website' },
+  { id: 'Instagram', icon: Instagram, label: 'Instagram' },
+  { id: 'TikTok', icon: Music2, label: 'TikTok' },
+  { id: 'Threads', icon: AtSign, label: 'Threads' },
+  { id: 'Twitter', icon: Twitter, label: 'Twitter' },
+  { id: 'Snapchat', icon: Ghost, label: 'Snapchat' },
+  { id: 'Youtube', icon: Youtube, label: 'YouTube' },
+  { id: 'Linkedin', icon: Linkedin, label: 'LinkedIn' },
+  { id: 'Discord', icon: Discord, label: 'Discord' },
+  { id: 'Mail', icon: Mail, label: 'Email' },
+  { id: 'ShoppingBag', icon: ShoppingBag, label: 'Shop' },
+  { id: 'Camera', icon: Camera, label: 'Portfolio' },
+  { id: 'Code', icon: Code, label: 'Custom' },
+  { id: 'Commerce', icon: CreditCard, label: 'Checkout' }
+];
+export const BG_PATTERNS = [
+  { id: 'none', name: 'None', desc: 'Pure flat canvas' },
+  { id: 'dust', name: 'Dust', desc: 'Floating cinematic particles' },
+  { id: 'grid', name: 'Grid', desc: 'Structural designer grid lines' },
+  { id: 'constellation', name: 'Constellation', desc: 'Ethereal node connections' },
+] as const;
+export const GRADIENT_PRESETS = [
+  { id: 'onyx-fade', name: 'Onyx Fade', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#1a1a1a', offset: 100 }] },
+  { id: 'golden-hour', name: 'Golden Hour', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#c9a961', offset: 100 }] },
+  { id: 'velvet-night', name: 'Velvet Night', stops: [{ color: '#000000', offset: 0 }, { color: '#1e1b4b', offset: 100 }] },
+  { id: 'minimal-sky', name: 'Minimal Sky', stops: [{ color: '#f8fafc', offset: 0 }, { color: '#e2e8f0', offset: 100 }] },
+];
+export const BUTTON_SHAPES = [
+  { id: 'sharp', name: 'Sharp', class: 'rounded-none' },
+  { id: 'rounded', name: 'Rounded', class: 'rounded-2xl' },
+  { id: 'pill', name: 'Pill', class: 'rounded-full' },
 ];
 export const COMMERCE_PROVIDERS = [
   { id: 'stripe', name: 'Stripe', color: '#635bff' },
@@ -55,51 +86,11 @@ export const WIDGET_PLATFORMS = [
   { id: 'twitch', name: 'Twitch', icon: Twitch },
   { id: 'vimeo', name: 'Vimeo', icon: Video }
 ];
-export const BUTTON_SHAPES = [
-  { id: 'sharp', name: 'Sharp', class: 'rounded-none' },
-  { id: 'rounded', name: 'Rounded', class: 'rounded-2xl' },
-  { id: 'pill', name: 'Pill', class: 'rounded-full' },
-];
-export const ICON_OPTIONS = [
-  { id: 'Globe', icon: Globe, label: 'Website' },
-  { id: 'Instagram', icon: Instagram, label: 'Instagram' },
-  { id: 'TikTok', icon: Music2, label: 'TikTok' },
-  { id: 'Threads', icon: AtSign, label: 'Threads' },
-  { id: 'Twitter', icon: Twitter, label: 'Twitter' },
-  { id: 'Snapchat', icon: Ghost, label: 'Snapchat' },
-  { id: 'Youtube', icon: Youtube, label: 'YouTube' },
-  { id: 'Linkedin', icon: Linkedin, label: 'LinkedIn' },
-  { id: 'Mail', icon: Mail, label: 'Email' },
-  { id: 'ShoppingBag', icon: ShoppingBag, label: 'Shop' },
-  { id: 'Camera', icon: Camera, label: 'Portfolio' },
-  { id: 'Code', icon: Code, label: 'Custom' },
-  { id: 'Social', icon: Share2, label: 'Social' },
-  { id: 'Commerce', icon: CreditCard, label: 'Checkout' }
-];
-export const BG_PATTERNS = [
-  { id: 'none', name: 'None', desc: 'Minimal solid canvas' },
-  { id: 'dust', name: 'Dust', desc: 'Floating cinematic particles' },
-  { id: 'grid', name: 'Grid', desc: 'Structural designer grid' },
-  { id: 'constellation', name: 'Constellation', desc: 'Ethereal node connections' },
-] as const;
-export const GRADIENT_PRESETS = [
-  { id: 'onyx-fade', name: 'Onyx Fade', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#1a1a1a', offset: 100 }] },
-  { id: 'golden-hour', name: 'Golden Hour', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#c9a961', offset: 100 }] },
-  { id: 'velvet-night', name: 'Velvet Night', stops: [{ color: '#000000', offset: 0 }, { color: '#1e1b4b', offset: 100 }] },
-];
-export interface ThemePreset {
-  id: string;
-  name: string;
-  description: string;
-  category: 'Editorial' | 'Minimal' | 'Vibrant' | 'Dark';
-  isPro: boolean;
-  appearance: Appearance;
-}
-export const ONYX_THEMES: ThemePreset[] = [
+export const ONYX_THEMES = [
   {
     id: 'editorial-onyx',
     name: 'Onyx Editorial',
-    description: 'The signature dark-luxury look with metallic gold accents and cinematic dust particles.',
+    description: 'Signature dark-luxury look with metallic gold accents.',
     category: 'Editorial',
     isPro: false,
     appearance: {
@@ -120,7 +111,7 @@ export const ONYX_THEMES: ThemePreset[] = [
   {
     id: 'vogue-light',
     name: 'Vogue Light',
-    description: 'A clean, high-fashion aesthetic inspired by modern editorial print layouts.',
+    description: 'A clean, high-fashion aesthetic inspired by modern print.',
     category: 'Minimal',
     isPro: true,
     appearance: {
@@ -135,7 +126,7 @@ export const ONYX_THEMES: ThemePreset[] = [
       bgPattern: 'none',
       bgGradient: { type: 'linear', angle: 180, stops: [{ color: '#ffffff', offset: 0 }, { color: '#f5f5f5', offset: 100 }] },
       colors: { btnFill: '#000000', btnText: '#000000', btnBorder: '#000000', profileText: '#000000', accent: '#000000' },
-      layout: { avatarShape: 'rounded', avatarBorderWidth: 0, avatarBorderColor: '#000000', buttonSpacing: 16, containerWidth: 540, socialPosition: 'bottom', socialIconStyle: 'glass', hideBranding: true }
+      layout: { avatarShape: 'rounded', avatarBorderWidth: 0, avatarBorderColor: '#000000', buttonSpacing: 16, containerWidth: 540, socialPosition: 'bottom', socialIconStyle: 'bold', hideBranding: true }
     }
   }
 ];

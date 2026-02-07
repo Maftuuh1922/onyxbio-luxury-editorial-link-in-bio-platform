@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
 import { motion } from 'framer-motion';
-import { ShoppingCart, Play, Lock } from 'lucide-react';
+import { ShoppingCart, Play } from 'lucide-react';
 export function ProfilePreview() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
@@ -28,6 +28,7 @@ export function ProfilePreview() {
     return style;
   }, [appearance, activeFont]);
   const activeSocials = Object.entries(socials).filter(([k, v]) => v && k !== 'position');
+  const iconStyle = appearance.layout.socialIconStyle || 'minimal';
   return (
     <div className="sticky top-24 w-full max-w-[320px] mx-auto group">
       <div className="relative aspect-[9/19] bg-onyx-dark rounded-[3rem] p-3 border-[8px] border-black shadow-2xl overflow-hidden">
@@ -40,8 +41,16 @@ export function ProfilePreview() {
           </div>
           {/* Top Socials Preview */}
           {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
-             <div className="mb-6 flex gap-2 p-1.5 rounded-full bg-black/20 border border-white/10 z-10">
-                {activeSocials.slice(0, 3).map(([key]) => <div key={key} className="w-2.5 h-2.5 rounded-full bg-white/40" />)}
+             <div className={cn(
+               "mb-6 flex gap-1.5 p-1.5 rounded-full z-10",
+               iconStyle === 'bold' ? "bg-black/10" : "bg-black/20 border border-white/10"
+             )}>
+                {activeSocials.slice(0, 4).map(([key]) => (
+                  <div key={key} className={cn(
+                    "w-2.5 h-2.5 rounded-full",
+                    iconStyle === 'bold' ? "bg-black/40" : "bg-white/40"
+                  )} />
+                ))}
              </div>
           )}
           <div
@@ -59,12 +68,17 @@ export function ProfilePreview() {
             <h2 className="text-xl font-bold uppercase tracking-tight leading-tight">{name || 'NAME'}</h2>
             <p className="text-[9px] italic font-serif opacity-70">{tagline}</p>
           </div>
-          <div className="w-full relative z-10 flex flex-col mb-10" style={{ gap: `${appearance.layout.buttonSpacing / 4}px` }}>
-            {links.filter(l => l.active).slice(0, 6).map((link) => (
-              <div
+          <div className="w-full relative z-10 flex flex-col mb-10" style={{ 
+            gap: `${appearance.layout.buttonSpacing / 4}px`,
+            maxWidth: `${(appearance.layout.containerWidth / 600) * 100}%`
+          }}>
+            {links.filter(l => l.active).slice(0, 8).map((link) => (
+              <motion.div
                 key={link.id}
+                animate={link.featured ? { scale: [1, 1.02, 1] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
                 className={cn(
-                  "w-full flex items-center p-2.5 text-[9px] font-bold uppercase tracking-widest transition-all",
+                  "w-full flex items-center p-2.5 text-[9px] font-bold uppercase tracking-widest transition-all relative overflow-hidden",
                   appearance.buttonShape === 'sharp' ? 'rounded-none' :
                   appearance.buttonShape === 'rounded' ? 'rounded-xl' : 'rounded-full'
                 )}
@@ -76,16 +90,27 @@ export function ProfilePreview() {
                   borderStyle: 'solid'
                 }}
               >
+                {link.featured && (
+                  <div className="absolute inset-0 bg-white/10 blur-sm pointer-events-none" />
+                )}
                 {link.type === 'commerce' ? <ShoppingCart className="w-2.5 h-2.5 mr-2" /> : link.type === 'widget' ? <Play className="w-2.5 h-2.5 mr-2" /> : <div className="w-2.5 h-2.5 bg-current/20 rounded-full mr-2" />}
-                <span className="truncate">{link.title}</span>
-              </div>
+                <span className="truncate relative z-10">{link.title}</span>
+              </motion.div>
             ))}
           </div>
           {/* Bottom Socials Preview */}
           {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
             <div className="mt-auto relative z-10 pb-4">
-              <div className="flex items-center gap-2 p-1.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10">
-                {activeSocials.slice(0, 4).map(([key]) => <div key={key} className="w-2.5 h-2.5 rounded-full bg-white/40" />)}
+              <div className={cn(
+               "flex items-center gap-1.5 p-1.5 rounded-full backdrop-blur-md",
+               iconStyle === 'bold' ? "bg-white/80" : "bg-black/20 border border-white/10"
+              )}>
+                {activeSocials.slice(0, 4).map(([key]) => (
+                  <div key={key} className={cn(
+                    "w-2.5 h-2.5 rounded-full",
+                    iconStyle === 'bold' ? "bg-black/20" : "bg-white/40"
+                  )} />
+                ))}
               </div>
             </div>
           )}

@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SocialDock } from '@/components/ui/SocialDock';
@@ -47,6 +47,20 @@ export function PublicProfilePage() {
     return style;
   }, [appearance, activeFont]);
   if (!name && username?.toLowerCase() !== 'alexander') return <Navigate to="/" replace />;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.3
+      }
+    }
+  };
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+  };
   return (
     <div className="relative min-h-screen selection:bg-white/20 overflow-x-hidden" style={canvasStyle}>
       <motion.div
@@ -57,14 +71,20 @@ export function PublicProfilePage() {
       <div className="fixed inset-0 z-0">
         <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
       </div>
-      <main className="relative z-10 mx-auto px-6 py-24 flex flex-col items-center" style={{ maxWidth: `${appearance.layout.containerWidth}px` }}>
+      <motion.main 
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 mx-auto px-6 py-24 md:py-32 flex flex-col items-center" 
+        style={{ maxWidth: `${appearance.layout.containerWidth}px` }}
+      >
         {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && (
-           <div className="mb-12"><SocialDock forceVisible /></div>
+           <motion.div variants={itemVariants} className="mb-16">
+             <SocialDock forceVisible />
+           </motion.div>
         )}
         <motion.header
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          variants={itemVariants}
           className="flex flex-col items-center text-center mb-20"
         >
           <div
@@ -91,56 +111,64 @@ export function PublicProfilePage() {
             </p>
           </div>
         </motion.header>
-        <motion.nav className="w-full flex flex-col" style={{ gap: `${appearance.layout.buttonSpacing}px` }}>
+        <motion.nav 
+          variants={containerVariants}
+          className="w-full flex flex-col" 
+          style={{ gap: `${appearance.layout.buttonSpacing}px` }}
+        >
           {links.filter(isLinkVisible).map((link) => (
-            <FeaturedWrapper key={link.id} featured={link.featured}>
-              {link.type === 'commerce' ? (
-                <CommerceLink link={link} appearance={appearance} />
-              ) : link.type === 'widget' ? (
-                <WidgetLink link={link} appearance={appearance} />
-              ) : (
-                <motion.a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "relative group flex items-center justify-between p-6 transition-all duration-500 overflow-hidden",
-                    appearance.buttonShape === 'sharp' ? 'rounded-none' :
-                    appearance.buttonShape === 'rounded' ? 'rounded-2xl' : 'rounded-full'
-                  )}
-                  style={{
-                    backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
-                    color: appearance.colors.btnText,
-                    borderColor: appearance.colors.btnBorder,
-                    borderWidth: '1px',
-                    borderStyle: 'solid',
-                    boxShadow: appearance.buttonShadow === 'hard' ? `6px 6px 0px ${appearance.colors.btnBorder}` : 'none'
-                  }}
-                >
-                  <div className="flex items-center gap-6 relative z-10">
-                    <div className="w-5 h-5 flex items-center justify-center">
-                      {(ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0]).icon({ className: "w-full h-full" })}
+            <motion.div key={link.id} variants={itemVariants}>
+              <FeaturedWrapper featured={link.featured}>
+                {link.type === 'commerce' ? (
+                  <CommerceLink link={link} appearance={appearance} />
+                ) : link.type === 'widget' ? (
+                  <WidgetLink link={link} appearance={appearance} />
+                ) : (
+                  <motion.a
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "relative group flex items-center justify-between p-6 transition-all duration-500 overflow-hidden",
+                      appearance.buttonShape === 'sharp' ? 'rounded-none' :
+                      appearance.buttonShape === 'rounded' ? 'rounded-2xl' : 'rounded-full'
+                    )}
+                    style={{
+                      backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
+                      color: appearance.colors.btnText,
+                      borderColor: appearance.colors.btnBorder,
+                      borderWidth: '1px',
+                      borderStyle: 'solid',
+                      boxShadow: appearance.buttonShadow === 'hard' ? `6px 6px 0px ${appearance.colors.btnBorder}` : 'none'
+                    }}
+                  >
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className="w-5 h-5 flex items-center justify-center">
+                        {(ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0]).icon({ className: "w-full h-full" })}
+                      </div>
+                      <div className="text-left">
+                        <h3 className="font-bold text-lg tracking-[0.1em] uppercase">{link.title}</h3>
+                        <p className="text-[10px] uppercase tracking-widest opacity-60 font-medium">{link.subtitle}</p>
+                      </div>
                     </div>
-                    <div className="text-left">
-                      <h3 className="font-bold text-lg tracking-[0.1em] uppercase">{link.title}</h3>
-                      <p className="text-[10px] uppercase tracking-widest opacity-60 font-medium">{link.subtitle}</p>
-                    </div>
-                  </div>
-                  <ArrowRight className="w-5 h-5 opacity-20 transition-all duration-500 group-hover:translate-x-2 group-hover:opacity-100" />
-                </motion.a>
-              )}
-            </FeaturedWrapper>
+                    <ArrowRight className="w-5 h-5 opacity-20 transition-all duration-500 group-hover:translate-x-2 group-hover:opacity-100" />
+                  </motion.a>
+                )}
+              </FeaturedWrapper>
+            </motion.div>
           ))}
         </motion.nav>
         {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && (
-           <SocialDock />
+           <motion.div variants={itemVariants} className="mt-12">
+             <SocialDock />
+           </motion.div>
         )}
         {!appearance.layout.hideBranding && (
-          <footer className="mt-40 mb-20 text-center opacity-30">
+          <motion.footer variants={itemVariants} className="mt-40 mb-20 text-center opacity-30">
             <p className="text-[9px] font-bold uppercase tracking-[0.4em]">OnyxBio Pro Editorial</p>
-          </footer>
+          </motion.footer>
         )}
-      </main>
+      </motion.main>
     </div>
   );
 }
