@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useShallow } from 'zustand/react/shallow';
+
 import { Instagram, Youtube, Linkedin, Mail, Globe, Twitter } from 'lucide-react';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
@@ -19,8 +19,8 @@ export function ProfilePreview() {
   const tagline = useProfile(s => s.tagline);
   const avatar = useProfile(s => s.avatar);
   const bio = useProfile(s => s.bio);
-  const links = useProfile(useShallow(s => s.links));
-  const socials = useProfile(useShallow(s => s.socials));
+  const links = useProfile(s => s.links);
+  const socials = useProfile(s => s.socials);
   const appearanceTheme = useProfile(s => s.appearance.themeId);
   const appearanceFont = useProfile(s => s.appearance.fontPairId);
   const themeColorClass = {
