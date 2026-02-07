@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Plus, GripVertical, Trash2, Edit2, Copy, Calendar, Link as LinkIcon, Search } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Calendar, Search } from 'lucide-react';
 import { useProfile, Link as LinkType } from '@/store/useProfile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -47,7 +47,14 @@ export function LinksEditor() {
   const addLink = useProfile((s) => s.addLink);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [search, setSearch] = useState('');
-  const [newLink, setNewLink] = useState({ title: '', subtitle: '', url: '', icon: 'Globe', active: true });
+  const [newLink, setNewLink] = useState<Omit<LinkType, 'id'>>({ 
+    title: '', 
+    subtitle: '', 
+    url: '', 
+    icon: 'Globe', 
+    active: true,
+    animation: 'none'
+  });
   const sensors = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   const filteredIcons = ICON_OPTIONS.filter(i => i.label.toLowerCase().includes(search.toLowerCase()));
   const handleDragEnd = (event: DragEndEvent) => {
@@ -61,7 +68,7 @@ export function LinksEditor() {
   const handleAddSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addLink(newLink);
-    setNewLink({ title: '', subtitle: '', url: '', icon: 'Globe', active: true });
+    setNewLink({ title: '', subtitle: '', url: '', icon: 'Globe', active: true, animation: 'none' });
     setIsAddOpen(false);
   };
   return (

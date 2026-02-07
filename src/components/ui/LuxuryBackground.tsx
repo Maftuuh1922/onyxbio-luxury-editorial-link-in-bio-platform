@@ -22,7 +22,7 @@ const PARTICLES_DATA: Particle[] = [
   { id: 10, size: 3, top: '80%', left: '30%', duration: 23, delay: 1, driftX: -35 },
 ];
 interface LuxuryBackgroundProps {
-  pattern?: 'dust' | 'grid' | 'constellation';
+  pattern?: 'none' | 'dust' | 'grid' | 'constellation';
   palettePrimary?: string;
 }
 export function LuxuryBackground({ pattern = 'dust', palettePrimary = '#c9a961' }: LuxuryBackgroundProps) {
