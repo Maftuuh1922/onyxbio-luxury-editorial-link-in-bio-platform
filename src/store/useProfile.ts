@@ -14,6 +14,9 @@ export interface Socials {
   twitter: string;
   linkedin: string;
   youtube: string;
+  tiktok?: string;
+  threads?: string;
+  snapchat?: string;
   email: string;
   discord?: string;
   position: 'top' | 'bottom' | 'both';
@@ -79,7 +82,7 @@ interface ProfileState {
   updateCustomCode: (data: Partial<CustomCode>) => void;
   resetProfile: () => void;
 }
-const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateLink' | 'deleteLink' | 'reorderLinks' | 'updateAppearance' | 'applyTheme' | 'updateSocials' | 'updateCustomCode' | 'resetProfile'> = {
+const DEFAULT_PROFILE_DATA: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateLink' | 'deleteLink' | 'reorderLinks' | 'updateAppearance' | 'applyTheme' | 'updateSocials' | 'updateCustomCode' | 'resetProfile'> = {
   name: "ALEXANDER ONYX",
   tagline: "Visual Storyteller & Digital Architect",
   bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE THE EXTRAORDINARY",
@@ -93,12 +96,15 @@ const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateL
     twitter: 'onyx_vision',
     linkedin: 'alexander-onyx',
     youtube: 'onyx_studio',
+    tiktok: 'onyx_official',
+    threads: 'onyx_vision',
+    snapchat: 'onyx_snap',
     email: 'hello@onyx.bio',
     discord: 'onyx_collective',
     position: 'bottom',
   },
   appearance: {
-    themeId: 'onyx-gold',
+    themeId: 'editorial-onyx',
     paletteId: 'imperial-gold',
     fontPairId: 'playfair',
     buttonShape: 'sharp',
@@ -121,10 +127,10 @@ const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateL
     },
     layout: {
       avatarShape: 'circle',
-      avatarBorderWidth: 2,
+      avatarBorderWidth: 1,
       avatarBorderColor: '#c9a961',
-      buttonSpacing: 16,
-      containerWidth: 680,
+      buttonSpacing: 12,
+      containerWidth: 600,
     }
   },
   customCode: {
@@ -138,7 +144,7 @@ type ProfileStore = UseBoundStore<StoreApi<ProfileState>>;
 export const useProfile: ProfileStore = create<ProfileState>()(
   persist(
     (set) => ({
-      ...DEFAULT_PROFILE,
+      ...DEFAULT_PROFILE_DATA,
       updateProfile: (data) => set((state) => ({ ...state, ...data })),
       addLink: (link) => set((state) => ({
         links: [...state.links, { ...link, id: Math.random().toString(36).substr(2, 9) }]
@@ -160,10 +166,10 @@ export const useProfile: ProfileStore = create<ProfileState>()(
       updateCustomCode: (data) => set((state) => ({
         customCode: { ...state.customCode, ...data }
       })),
-      resetProfile: () => set(DEFAULT_PROFILE as any),
+      resetProfile: () => set(DEFAULT_PROFILE_DATA as any),
     }),
     {
-      name: 'onyx-profile-storage-pro-v2',
+      name: 'onyx-profile-storage-final-v1',
     }
   )
 );

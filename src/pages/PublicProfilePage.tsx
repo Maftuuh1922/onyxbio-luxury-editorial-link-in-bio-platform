@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SocialDock } from '@/components/ui/SocialDock';
@@ -46,12 +46,14 @@ export function PublicProfilePage() {
     }
     return style;
   }, [appearance, activeFont]);
+  // Ensure mock data displays for demonstration if profile state is fresh/matching demo
+  const isDemo = username?.toLowerCase() === 'alexander' || !name;
   if (!name && username?.toLowerCase() !== 'alexander') return <Navigate to="/" replace />;
   return (
-    <div className="relative min-h-screen selection:bg-white/20" style={canvasStyle}>
+    <div className="relative min-h-screen selection:bg-white/20 overflow-x-hidden" style={canvasStyle}>
       {/* Scroll Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 z-[100] origin-left"
+        className="fixed top-0 left-0 right-0 h-1.5 z-[100] origin-left shadow-lg"
         style={{ scaleX, backgroundColor: appearance.colors.accent }}
       />
       {customCode.enabled && customCode.css && <style>{customCode.css}</style>}
@@ -69,7 +71,7 @@ export function PublicProfilePage() {
           className="flex flex-col items-center text-center mb-20"
         >
           <div
-            className="w-40 h-40 shadow-2xl overflow-hidden mb-12 ring-offset-4 ring-offset-black ring-1"
+            className="w-36 h-36 md:w-44 md:h-44 shadow-2xl overflow-hidden mb-12 ring-offset-8 ring-offset-transparent ring-1"
             style={{
               borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '24%' : '0%',
               borderColor: appearance.layout.avatarBorderColor,
@@ -80,14 +82,14 @@ export function PublicProfilePage() {
             <img src={avatar} alt={name} className="w-full h-full object-cover" />
           </div>
           <div className="space-y-6" style={{ color: appearance.colors.profileText }}>
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight uppercase leading-none">
+            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter uppercase leading-none">
               {name}
             </h1>
             <p className="text-xl md:text-2xl font-serif italic opacity-80">
               {tagline}
             </p>
-            <div className="w-12 h-px bg-current mx-auto opacity-30 my-8" />
-            <p className="text-[10px] font-ornament uppercase tracking-[0.5em] max-w-sm mx-auto leading-relaxed opacity-50">
+            <div className="w-16 h-px bg-current mx-auto opacity-30 my-8" />
+            <p className="text-xs md:text-sm font-ornament uppercase tracking-[0.4em] max-w-sm mx-auto leading-relaxed opacity-60">
               {bio}
             </p>
           </div>

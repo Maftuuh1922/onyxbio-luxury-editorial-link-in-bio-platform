@@ -1,11 +1,7 @@
 import {
   Globe, Instagram, Mail, Twitter, Youtube, Linkedin,
-  ShoppingBag, Camera, Music, Video, MapPin,
-  Link as LinkIcon, Heart, Star, Briefcase, Zap,
-  Send, MessageCircle, Phone, Github, Figma,
-  Twitch, Slack, Dribbble, ExternalLink,
-  Smartphone, User, MessageSquare, Code, Layout, Palette,
-  Music2, AtSign, Ghost
+  ShoppingBag, Camera, Music2, AtSign, Ghost, Share2,
+  Code, MessageCircle
 } from 'lucide-react';
 import { Appearance } from '@/store/useProfile';
 export const SYSTEM_FONTS = [
@@ -38,6 +34,7 @@ export const ICON_OPTIONS = [
   { id: 'ShoppingBag', icon: ShoppingBag, label: 'Shop' },
   { id: 'Camera', icon: Camera, label: 'Portfolio' },
   { id: 'Code', icon: Code, label: 'Custom' },
+  { id: 'Social', icon: Share2, label: 'Social' },
 ];
 export const BG_PATTERNS = [
   { id: 'none', name: 'None', desc: 'Minimal solid canvas' },
@@ -53,6 +50,7 @@ export const GRADIENT_PRESETS = [
 export interface ThemePreset {
   id: string;
   name: string;
+  description: string;
   category: 'Editorial' | 'Minimal' | 'Vibrant' | 'Dark';
   isPro: boolean;
   appearance: Appearance;
@@ -61,10 +59,11 @@ export const ONYX_THEMES: ThemePreset[] = [
   {
     id: 'editorial-onyx',
     name: 'Onyx Editorial',
+    description: 'The signature dark-luxury look with metallic gold accents and cinematic dust particles.',
     category: 'Editorial',
     isPro: false,
     appearance: {
-      themeId: 'onyx-gold',
+      themeId: 'editorial-onyx',
       paletteId: 'imperial-gold',
       fontPairId: 'playfair',
       buttonShape: 'sharp',
@@ -81,10 +80,11 @@ export const ONYX_THEMES: ThemePreset[] = [
   {
     id: 'vogue-light',
     name: 'Vogue Light',
+    description: 'A clean, high-fashion aesthetic inspired by modern editorial print layouts.',
     category: 'Minimal',
     isPro: true,
     appearance: {
-      themeId: 'light',
+      themeId: 'vogue-light',
       paletteId: 'noir',
       fontPairId: 'karla',
       buttonShape: 'pill',
