@@ -1,8 +1,8 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, BarChart, Bar 
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 import { Globe, Smartphone, MousePointer2, Users, ArrowUpRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -18,7 +18,7 @@ const trafficData = [
 ];
 const deviceData = [
   { name: 'Mobile', value: 78, color: '#c9a961' },
-  { name: 'Desktop', value: 22, color: '#1a1a1a' },
+  { name: 'Desktop', value: 22, color: '#2a2a2a' },
 ];
 const regionData = [
   { name: 'USA', value: 450 },
@@ -26,6 +26,22 @@ const regionData = [
   { name: 'France', value: 280 },
   { name: 'Japan', value: 190 },
 ];
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-onyx-dark/90 backdrop-blur-md border border-onyx-gold/20 p-4 shadow-2xl">
+        <p className="font-ornament text-[10px] tracking-widest text-onyx-gray uppercase mb-2">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={index} className="font-display text-sm text-onyx-white flex items-center justify-between gap-4">
+            <span className="capitalize">{entry.name}:</span>
+            <span className="text-onyx-gold">{entry.value.toLocaleString()}</span>
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 export function AnalyticsDashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12 space-y-12">
@@ -33,7 +49,6 @@ export function AnalyticsDashboard() {
         <h1 className="font-display text-4xl text-onyx-white uppercase tracking-wider mb-2">Deep Analytics</h1>
         <p className="text-onyx-gray font-serif italic">Insights for the discerning creator.</p>
       </header>
-      {/* Hero Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
           { label: 'Growth Score', value: '+24%', icon: ArrowUpRight, color: 'text-green-400' },
@@ -47,7 +62,7 @@ export function AnalyticsDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <Card className="bg-onyx-secondary border-white/5 p-6 space-y-4">
+            <Card className="bg-onyx-secondary border-white/5 p-6 space-y-4 hover:border-onyx-gold/20 transition-colors">
               <div className="flex items-center justify-between">
                 <span className="font-ornament text-[10px] tracking-[0.2em] text-onyx-gray uppercase">{stat.label}</span>
                 <stat.icon className={cn("w-4 h-4", stat.color)} />
@@ -57,31 +72,27 @@ export function AnalyticsDashboard() {
           </motion.div>
         ))}
       </div>
-      {/* Traffic Flows */}
       <Card className="bg-onyx-secondary border-white/5 p-8">
-        <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold mb-8">Traffic Insights</h3>
+        <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold mb-8">Traffic Flows</h3>
         <div className="h-[400px] w-full">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={trafficData}>
               <defs>
                 <linearGradient id="viewsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#c9a961" stopOpacity={0.3}/>
+                  <stop offset="5%" stopColor="#c9a961" stopOpacity={0.2}/>
                   <stop offset="95%" stopColor="#c9a961" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
-              <XAxis dataKey="date" stroke="#666" fontSize={12} axisLine={false} tickLine={false} />
-              <YAxis stroke="#666" fontSize={12} axisLine={false} tickLine={false} />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', color: '#e8e8e8' }}
-              />
-              <Area type="monotone" dataKey="views" stroke="#c9a961" fill="url(#viewsGrad)" strokeWidth={2} />
-              <Area type="monotone" dataKey="clicks" stroke="#e8e8e8" fill="transparent" strokeWidth={2} strokeDasharray="5 5" />
+              <XAxis dataKey="date" stroke="#666" fontSize={10} axisLine={false} tickLine={false} dy={10} />
+              <YAxis stroke="#666" fontSize={10} axisLine={false} tickLine={false} dx={-10} />
+              <Tooltip content={<CustomTooltip />} />
+              <Area type="monotone" name="views" dataKey="views" stroke="#c9a961" fill="url(#viewsGrad)" strokeWidth={2} activeDot={{ r: 6, fill: '#c9a961' }} />
+              <Area type="monotone" name="clicks" dataKey="clicks" stroke="#e8e8e8" fill="transparent" strokeWidth={1} strokeDasharray="5 5" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
       </Card>
-      {/* Demographics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="bg-onyx-secondary border-white/5 p-8">
           <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold mb-8">Audience Composition</h3>
@@ -89,19 +100,20 @@ export function AnalyticsDashboard() {
             <div className="h-[200px] w-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
-                  <Pie data={deviceData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
+                  <Pie data={deviceData} innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
                     {deviceData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Pie>
+                  <Tooltip content={<CustomTooltip />} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-4 w-full md:w-auto">
               {deviceData.map((d) => (
-                <div key={d.name} className="flex items-center gap-4">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-                  <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white">{d.name}</span>
+                <div key={d.name} className="flex items-center gap-4 border-b border-white/5 pb-2">
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} />
+                  <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white flex-1">{d.name}</span>
                   <span className="text-onyx-gold font-display text-xl">{d.value}%</span>
                 </div>
               ))}
@@ -112,11 +124,11 @@ export function AnalyticsDashboard() {
           <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold mb-8">Top Regions</h3>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={regionData} layout="vertical">
+              <BarChart data={regionData} layout="vertical" margin={{ left: 20 }}>
                 <XAxis type="number" hide />
-                <YAxis dataKey="name" type="category" stroke="#666" fontSize={12} axisLine={false} tickLine={false} />
-                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#1a1a1a', border: 'none' }} />
-                <Bar dataKey="value" fill="#c9a961" radius={[0, 4, 4, 0]} barSize={20} />
+                <YAxis dataKey="name" type="category" stroke="#666" fontSize={10} axisLine={false} tickLine={false} width={60} />
+                <Tooltip cursor={{ fill: 'rgba(255,255,255,0.03)' }} content={<CustomTooltip />} />
+                <Bar dataKey="value" name="visitors" fill="#c9a961" radius={[0, 4, 4, 0]} barSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>

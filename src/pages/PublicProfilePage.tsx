@@ -6,7 +6,27 @@ import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { useAuth } from '@/store/useAuth';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
-const iconMap: Record<string, any> = { Globe, Instagram, Mail, Twitter, Youtube, Linkedin };
+const iconMap: Record<string, any> = { 
+  Globe, 
+  Instagram, 
+  Mail, 
+  Twitter, 
+  Youtube, 
+  Linkedin,
+  Email: Mail // Fallback for case sensitivity or direct mapping
+};
+const getSocialUrl = (platform: string, handle: string) => {
+  if (!handle) return '#';
+  if (handle.startsWith('http')) return handle;
+  switch (platform.toLowerCase()) {
+    case 'instagram': return `https://instagram.com/${handle}`;
+    case 'twitter': return `https://twitter.com/${handle}`;
+    case 'linkedin': return `https://linkedin.com/in/${handle}`;
+    case 'youtube': return `https://youtube.com/@${handle}`;
+    case 'email': return `mailto:${handle}`;
+    default: return handle;
+  }
+};
 export function PublicProfilePage() {
   const { username } = useParams();
   const currentUser = useAuth((s) => s.user);
@@ -18,7 +38,11 @@ export function PublicProfilePage() {
   const socials = useProfile((s) => s.socials);
   const appearance = useProfile((s) => s.appearance);
   const isOwnProfile = currentUser?.username?.toLowerCase() === username?.toLowerCase();
-  const activeProfile = isOwnProfile ? {
+  const isDemoProfile = username?.toLowerCase() === 'alexander';
+  // A profile is accessible if it's the demo or if the slug matches the stored profile
+  const profileSlug = profileName.toLowerCase().replace(/\s+/g, '');
+  const isMatch = username?.toLowerCase() === profileSlug;
+  const displayProfile = (isMatch || isOwnProfile) ? {
     name: profileName,
     tagline: profileTagline,
     bio: profileBio,
@@ -26,11 +50,7 @@ export function PublicProfilePage() {
     links: profileLinks.filter(l => l.active),
     socials: socials,
     appearance: appearance
-  } : null;
-  if (!activeProfile && username !== 'alexander') {
-    return <Navigate to="/" replace />;
-  }
-  const displayProfile = activeProfile || {
+  } : isDemoProfile ? {
     name: "ALEXANDER ONYX",
     tagline: "Visual Storyteller & Digital Architect",
     bio: "CREATIVE • INNOVATOR • DREAMER",
@@ -42,7 +62,10 @@ export function PublicProfilePage() {
     ],
     socials: { instagram: 'alexander', twitter: 'alexander', linkedin: 'alexander', email: 'hello@alexander.bio', youtube: '' },
     appearance: { themeId: 'onyx-gold', fontPairId: 'editorial' }
-  };
+  } : null;
+  if (!displayProfile) {
+    return <Navigate to="/" replace />;
+  }
   const themeClasses = {
     'onyx-gold': 'text-onyx-gold',
     'silver-noir': 'text-onyx-gray',
@@ -72,7 +95,16 @@ export function PublicProfilePage() {
           {displayProfile.links.map((link: any, idx: number) => {
             const Icon = iconMap[link.icon] || Globe;
             return (
-              <motion.a key={link.id} href={link.url} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 + (idx * 0.1) }} className="glass-card shimmer-trigger block p-6 md:p-8 group">
+              <motion.a 
+                key={link.id} 
+                href={link.url} 
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: 0.2 + (idx * 0.1) }} 
+                className="glass-card shimmer-trigger block p-6 md:p-8 group"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-6">
                     <div className={cn("group-hover:scale-110 transition-transform duration-500", themeClasses)}><Icon className="w-5 h-5" /></div>
@@ -91,14 +123,20 @@ export function PublicProfilePage() {
             <div className={cn("font-ornament tracking-[0.6em] text-lg opacity-40", themeClasses)}>◆ ONYXBIO ◆</div>
         </footer>
       </main>
-      {/* Floating Social Dock */}
       <motion.div initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 1, duration: 1, type: 'spring' }} className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
         <div className="bg-onyx-dark/40 backdrop-blur-xl border border-white/10 px-8 py-4 rounded-full flex items-center gap-8 shadow-2xl">
           {Object.entries(displayProfile.socials).map(([key, value]) => {
             if (!value) return null;
-            const Icon = iconMap[key.charAt(0).toUpperCase() + key.slice(1)] || Globe;
+            const platformIconName = key === 'email' ? 'Mail' : key.charAt(0).toUpperCase() + key.slice(1);
+            const Icon = iconMap[platformIconName] || Globe;
             return (
-              <a key={key} href={key === 'email' ? `mailto:${value}` : '#'} target="_blank" rel="noopener noreferrer" className={cn("hover:scale-125 transition-all duration-300 hover:text-onyx-gold-light", themeClasses)}>
+              <a 
+                key={key} 
+                href={getSocialUrl(key, value as string)} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className={cn("hover:scale-125 transition-all duration-300 hover:text-onyx-gold-light", themeClasses)}
+              >
                 <Icon className="w-5 h-5" />
               </a>
             );
