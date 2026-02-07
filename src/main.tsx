@@ -21,6 +21,7 @@ import { LinksEditor } from '@/pages/dashboard/LinksEditor';
 import { AppearanceEditor } from '@/pages/dashboard/AppearanceEditor';
 import { AnalyticsDashboard } from '@/pages/dashboard/AnalyticsDashboard';
 import { SettingsPage } from '@/pages/dashboard/SettingsPage';
+import { NotFoundPage } from '@/pages/NotFoundPage';
 // Layouts
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 const queryClient = new QueryClient();
@@ -41,6 +42,11 @@ const router = createBrowserRouter([
     errorElement: <RouteErrorBoundary />,
   },
   {
+    path: "/forgot-password",
+    element: <AuthPage mode="forgot-password" />,
+    errorElement: <RouteErrorBoundary />,
+  },
+  {
     path: "/dashboard",
     element: <DashboardLayout />,
     errorElement: <RouteErrorBoundary />,
@@ -58,6 +64,11 @@ const router = createBrowserRouter([
     element: <PublicProfilePage />,
     errorElement: <RouteErrorBoundary />,
   },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+    errorElement: <RouteErrorBoundary />,
+  }
 ]);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

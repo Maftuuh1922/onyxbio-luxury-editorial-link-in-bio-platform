@@ -5,21 +5,29 @@ export default {
   theme: {
   	extend: {
   		fontFamily: {
-  			sans: ['Inter', 'Space Grotesk', 'sans-serif'],
+  			sans: ['Inter', 'Karla', 'sans-serif'],
 			display: ['Playfair Display', 'serif'],
 			ornament: ['Cinzel', 'serif'],
 			serif: ['Cormorant Garamond', 'serif'],
 			space: ['Space Grotesk', 'sans-serif'],
+			karla: ['Karla', 'sans-serif'],
   		},
   		colors: {
+			brand: {
+				'purple': '#8129D9',
+				'lime': '#43E660',
+				'bg': '#F6F7F5',
+				'text': '#1E2330',
+				'muted': '#6A7280',
+			},
 			landing: {
-				'purple-hero': '#8B5CF6',
-				'blue-feat': '#3B82F6',
-				'red-share': '#DC2626',
-				'mint-analytics': '#D4F8E8',
-				'yellow-bento': '#FBBF24',
-				'maroon-faq': '#7C2D12',
-				'dark-footer': '#1F2937',
+				'gold-hero': '#c9a961',
+				'blue-feat': '#1E3A8A',
+				'red-share': '#991B1B',
+				'mint-analytics': '#ECFDF5',
+				'yellow-bento': '#FDE68A',
+				'maroon-faq': '#450A0A',
+				'dark-footer': '#0a0a0a',
 			},
   			onyx: {
 				dark: '#0a0a0a',

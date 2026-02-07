@@ -19,7 +19,7 @@ const FeatureSection = ({
   visual: React.ReactNode,
   reverse?: boolean
 }) => (
-  <div id={id} className={cn(bg, "py-24 md:py-32")}>
+  <div id={id} className={cn(bg, "py-24 md:py-32 overflow-hidden")}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className={cn("flex flex-col gap-16 md:gap-24 items-center", reverse ? "md:flex-row-reverse" : "md:flex-row")}>
         <motion.div
@@ -67,7 +67,7 @@ export function LandingFeatures() {
             <div className="grid grid-cols-2 gap-4">
                {[1,2,3,4].map(i => (
                  <div key={i} className="aspect-square rounded-2xl bg-white/5 border border-white/10 hover:bg-white/15 transition-colors cursor-pointer flex items-center justify-center">
-                    <div className={cn("w-8 h-8 rounded-full", i === 1 ? 'bg-[#c9a961]' : i === 2 ? 'bg-[#a8a8a8]' : i === 3 ? 'bg-emerald-700' : 'bg-red-500')} />
+                    <div className={cn("w-8 h-8 rounded-full shadow-lg", i === 1 ? 'bg-onyx-gold' : i === 2 ? 'bg-white' : i === 3 ? 'bg-blue-600' : 'bg-red-600')} />
                  </div>
                ))}
             </div>
@@ -83,11 +83,11 @@ export function LandingFeatures() {
         reverse
         visual={
           <div className="relative h-[400px]">
-            <div className="absolute top-0 right-0 w-[200px] h-[350px] bg-black rounded-3xl border-4 border-white/20 z-20 shadow-2xl overflow-hidden">
-               <div className="bg-gradient-to-b from-red-500 to-black w-full h-full p-4" />
+            <div className="absolute top-0 right-0 w-[200px] h-[350px] bg-black rounded-3xl border-4 border-white/10 z-20 shadow-2xl overflow-hidden">
+               <div className="bg-gradient-to-b from-onyx-gold/20 to-black w-full h-full p-4" />
             </div>
-            <div className="absolute bottom-0 left-0 w-[300px] h-[220px] bg-black rounded-2xl border-4 border-white/20 z-10 shadow-2xl overflow-hidden flex items-center justify-center">
-               <span className="font-space text-white/20 font-bold uppercase tracking-widest">Atelier Dashboard</span>
+            <div className="absolute bottom-0 left-0 w-[300px] h-[220px] bg-black rounded-2xl border-4 border-white/10 z-10 shadow-2xl overflow-hidden flex items-center justify-center">
+               <span className="font-space text-white/10 font-bold uppercase tracking-widest text-sm">Dashboard Preview</span>
             </div>
           </div>
         }
@@ -99,13 +99,13 @@ export function LandingFeatures() {
         title="Analyze with precision."
         desc="Deep insights into your traffic. Know where your visitors come from, what they click, and how they engage with your content."
         visual={
-          <div className="bg-white rounded-[2.5rem] p-10 border border-black/5 shadow-2xl space-y-8">
+          <div className="bg-white rounded-[2.5rem] p-10 border border-black/5 shadow-2xl space-y-8 text-black">
             <div className="flex items-center justify-between">
-               <div className="space-y-1">
-                 <p className="text-black/40 font-space text-sm uppercase">Total Views</p>
-                 <p className="text-4xl font-space font-bold text-black">124,802</p>
+               <div className="space-y-1 text-left">
+                 <p className="text-black/40 text-xs font-bold uppercase tracking-wider">Total Views</p>
+                 <p className="text-4xl font-bold">124,802</p>
                </div>
-               <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
+               <div className="w-12 h-12 rounded-full bg-onyx-gold/10 flex items-center justify-center text-onyx-gold">
                   <BarChart3 />
                </div>
             </div>
@@ -116,7 +116,7 @@ export function LandingFeatures() {
                    initial={{ height: 0 }}
                    whileInView={{ height: `${h}%` }}
                    transition={{ delay: i * 0.1 }}
-                   className="flex-1 bg-landing-blue-feat rounded-t-sm"
+                   className="flex-1 bg-onyx-gold rounded-t-lg"
                  />
                ))}
             </div>

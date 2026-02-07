@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Eye, MousePointer2, Link as LinkIcon, TrendingUp } from 'lucide-react';
+import { Eye, MousePointer2, Link as LinkIcon, TrendingUp, ArrowUpRight, ArrowDownRight, MoreHorizontal } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
@@ -10,37 +10,38 @@ import { cn } from '@/lib/utils';
 const data = [
   { name: 'Mon', views: 400, clicks: 240 },
   { name: 'Tue', views: 300, clicks: 139 },
-  { name: 'Wed', views: 200, clicks: 980 },
-  { name: 'Thu', views: 278, clicks: 390 },
-  { name: 'Fri', views: 189, clicks: 480 },
-  { name: 'Sat', views: 239, clicks: 380 },
-  { name: 'Sun', views: 349, clicks: 430 },
+  { name: 'Wed', views: 800, clicks: 580 },
+  { name: 'Thu', views: 678, clicks: 390 },
+  { name: 'Fri', views: 989, clicks: 780 },
+  { name: 'Sat', views: 1239, clicks: 880 },
+  { name: 'Sun', views: 1349, clicks: 930 },
 ];
 export function DashboardOverview() {
   const navigate = useNavigate();
-  // ZUSTAND COMPLIANCE: Stable primitive/array selection
   const links = useProfile((s) => s.links);
   const activeLinksCount = React.useMemo(() => links.filter(l => l.active).length, [links]);
-  const recentLinks = React.useMemo(() => links.slice(0, 3), [links]);
   const stats = [
-    { label: 'Total Views', value: '1,284', icon: Eye, color: 'text-blue-400' },
-    { label: 'Total Clicks', value: '842', icon: MousePointer2, color: 'text-onyx-gold' },
-    { label: 'Avg CTR', value: '65.5%', icon: TrendingUp, color: 'text-green-400' },
-    { label: 'Active Links', value: activeLinksCount.toString(), icon: LinkIcon, color: 'text-purple-400' },
+    { label: 'Total Views', value: '1,284', trend: '+12.5%', isUp: true, icon: Eye, color: 'text-brand-purple', bg: 'bg-brand-purple/10' },
+    { label: 'Total Clicks', value: '842', trend: '+8.2%', isUp: true, icon: MousePointer2, color: 'text-brand-lime', bg: 'bg-brand-lime/10' },
+    { label: 'Avg CTR', value: '65.5%', trend: '-2.1%', isUp: false, icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Active Links', value: activeLinksCount.toString(), trend: '+1', isUp: true, icon: LinkIcon, color: 'text-orange-500', bg: 'bg-orange-500/10' },
   ];
   return (
-    <div className="p-6 md:p-8 space-y-8">
+    <div className="p-6 md:p-8 space-y-8 max-w-7xl mx-auto">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display text-3xl text-onyx-white uppercase tracking-wider">Overview</h1>
-          <p className="text-onyx-gray font-serif italic">Your digital presence at a glance.</p>
+          <h1 className="text-3xl font-bold text-brand-text">Dashboard</h1>
+          <p className="text-brand-muted text-sm font-medium">Welcome back to your OnyxBio workspace.</p>
         </div>
-        <Button
-          onClick={() => navigate('/dashboard/links')}
-          className="bg-onyx-gold hover:bg-onyx-gold-light text-onyx-dark font-ornament tracking-widest px-6"
-        >
-          + ADD NEW LINK
-        </Button>
+        <div className="flex gap-3">
+          <Button variant="outline" className="rounded-xl border-gray-200">Share Profile</Button>
+          <Button
+            onClick={() => navigate('/dashboard/links')}
+            className="bg-brand-purple hover:bg-brand-purple/90 text-white font-bold rounded-xl px-6"
+          >
+            Add New Link
+          </Button>
+        </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((s, i) => (
@@ -50,69 +51,67 @@ export function DashboardOverview() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            <Card className="bg-onyx-secondary border-white/5 p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="font-ornament text-[10px] tracking-[0.2em] text-onyx-gray uppercase">{s.label}</span>
-                <s.icon className={cn("w-4 h-4", s.color)} />
+            <Card className="bg-white border-none shadow-sm p-6 hover:shadow-md transition-shadow group cursor-default">
+              <div className="flex items-center justify-between mb-4">
+                <div className={cn("p-2 rounded-lg", s.bg)}>
+                  <s.icon className={cn("w-5 h-5", s.color)} />
+                </div>
+                <div className={cn("flex items-center text-xs font-bold", s.isUp ? "text-brand-lime" : "text-red-500")}>
+                  {s.trend} {s.isUp ? <ArrowUpRight className="w-3 h-3 ml-1" /> : <ArrowDownRight className="w-3 h-3 ml-1" />}
+                </div>
               </div>
-              <p className="text-3xl font-display text-onyx-white">{s.value}</p>
+              <p className="text-3xl font-bold text-brand-text group-hover:scale-105 transition-transform origin-left">{s.value}</p>
+              <p className="text-xs font-bold text-brand-muted uppercase tracking-wider mt-1">{s.label}</p>
             </Card>
           </motion.div>
         ))}
       </div>
-      <Card className="bg-onyx-secondary border-white/5 p-8">
-        <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold mb-8">Performance Flow</h3>
-        <div className="h-[300px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data}>
-              <defs>
-                <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#c9a961" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="#c9a961" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#222" />
-              <XAxis dataKey="name" stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-              <YAxis stroke="#666" fontSize={12} tickLine={false} axisLine={false} />
-              <Tooltip
-                contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333', color: '#e8e8e8' }}
-                itemStyle={{ color: '#c9a961' }}
-              />
-              <Area type="monotone" dataKey="views" stroke="#c9a961" fillOpacity={1} fill="url(#colorViews)" strokeWidth={2} />
-            </AreaChart>
-          </ResponsiveContainer>
-        </div>
-      </Card>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <Card className="bg-onyx-secondary border-white/5 p-8 space-y-6">
-          <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold">Top Performing Links</h3>
-          <div className="space-y-4">
-            {recentLinks.map((l, i) => (
-              <div key={l.id} className="flex items-center justify-between p-4 bg-white/5 border border-white/5 rounded">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-onyx-dark border border-onyx-gold/20 flex items-center justify-center text-onyx-gold font-ornament">{i + 1}</div>
-                  <div>
-                    <p className="text-sm font-medium text-onyx-white truncate max-w-[150px]">{l.title}</p>
-                    <p className="text-[10px] text-onyx-gray uppercase truncate max-w-[150px]">{l.url.replace(/(^\w+:|^)\/\//, '')}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-display text-onyx-gold">{Math.floor(Math.random() * 500)} Clicks</p>
-                </div>
-              </div>
-            ))}
-            {links.length === 0 && <p className="text-onyx-gray italic text-center text-sm py-4">No links active.</p>}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <Card className="lg:col-span-2 bg-white border-none shadow-sm p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h3 className="font-bold text-brand-text">Traffic Overview</h3>
+            <select className="text-xs font-bold border-none bg-gray-50 rounded-lg p-2 focus:ring-0">
+              <option>Last 7 Days</option>
+              <option>Last 30 Days</option>
+            </select>
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={data}>
+                <defs>
+                  <linearGradient id="colorBrand" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8129D9" stopOpacity={0.2}/>
+                    <stop offset="95%" stopColor="#8129D9" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f1f1" vertical={false} />
+                <XAxis dataKey="name" stroke="#A1A1AA" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#A1A1AA" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#fff', border: 'none', borderRadius: '12px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                />
+                <Area type="monotone" dataKey="views" stroke="#8129D9" fillOpacity={1} fill="url(#colorBrand)" strokeWidth={3} dot={{ r: 4, fill: '#8129D9', strokeWidth: 2, stroke: '#fff' }} />
+                <Area type="monotone" dataKey="clicks" stroke="#43E660" fill="transparent" strokeWidth={2} strokeDasharray="5 5" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </Card>
-        <Card className="bg-onyx-secondary border-white/5 p-8 space-y-6">
-          <h3 className="font-ornament text-sm tracking-widest uppercase text-onyx-gold">Recent Activity</h3>
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center gap-4 text-sm font-serif italic text-onyx-gray border-l-2 border-onyx-gold/30 pl-4 py-1">
-                <span className="text-xs font-ornament not-italic text-onyx-gray-dark">2h ago</span>
-                <p>New view from <span className="text-onyx-white">Instagram / Mobile</span></p>
+        <Card className="bg-white border-none shadow-sm p-8">
+          <h3 className="font-bold text-brand-text mb-6">Recent Activity</h3>
+          <div className="space-y-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex items-start gap-4">
+                <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
+                   <TrendingUp className="w-4 h-4 text-brand-lime" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-brand-text font-bold">New click recorded</p>
+                  <p className="text-[10px] text-brand-muted truncate">Someone clicked your "Portfolio" link from Instagram.</p>
+                  <p className="text-[9px] text-brand-muted mt-1 uppercase">2 MINUTES AGO</p>
+                </div>
               </div>
             ))}
+            <Button variant="ghost" className="w-full text-brand-purple text-xs font-bold hover:bg-brand-purple/5 mt-4">View All Logs</Button>
           </div>
         </Card>
       </div>
