@@ -1,4 +1,5 @@
 import React from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useProfile } from '@/store/useProfile';
 import { Label } from '@/components/ui/label';
@@ -17,14 +18,20 @@ export function AppearanceEditor() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
   const bio = useProfile(s => s.bio);
-  const appearance = useProfile(s => s.appearance);
+  const appearance = useProfile(useShallow(s => s.appearance));
   const updateProfile = useProfile(s => s.updateProfile);
   const updateAppearance = useProfile(s => s.updateAppearance);
-  const handleColorChange = (key: keyof typeof appearance.colors, value: string) => {
-    updateAppearance({ colors: { ...appearance.colors, [key]: value } });
+  const handleColorChange = (key: string, value: string) => {
+    updateAppearance((prev) => ({ 
+      ...prev, 
+      colors: { ...prev.colors, [key]: value } 
+    }));
   };
-  const handleLayoutChange = (key: keyof typeof appearance.layout, value: any) => {
-    updateAppearance({ layout: { ...appearance.layout, [key]: value } });
+  const handleLayoutChange = (key: string, value: any) => {
+    updateAppearance((prev) => ({ 
+      ...prev, 
+      layout: { ...prev.layout, [key]: value } 
+    }));
   };
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">

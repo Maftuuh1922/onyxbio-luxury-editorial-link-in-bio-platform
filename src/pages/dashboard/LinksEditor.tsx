@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { useShallow } from 'zustand/react/shallow';
 import { CSS } from '@dnd-kit/utilities';
-import { Plus, GripVertical, Trash2, Calendar, Search, CreditCard, Play, Globe, Sparkles, Clock } from 'lucide-react';
+import { Plus, GripVertical, Trash2, Search, CreditCard, Play, Globe, Sparkles, Clock } from 'lucide-react';
 import { useProfile, Link as LinkType } from '@/store/useProfile';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,10 +13,10 @@ import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
 import { cn } from '@/lib/utils';
-import { ICON_OPTIONS, LINK_TYPES, CURRENCY_OPTIONS, COMMERCE_PROVIDERS, WIDGET_PLATFORMS } from '@/lib/constants';
+import { ICON_OPTIONS, LINK_TYPES, COMMERCE_PROVIDERS } from '@/lib/constants';
 function SortableLinkCard({ link }: { link: LinkType }) {
-  const updateLink = useProfile((s) => s.updateLink);
-  const deleteLink = useProfile((s) => s.deleteLink);
+  const updateLink = useProfile(s => s.updateLink);
+  const deleteLink = useProfile(s => s.deleteLink);
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: link.id });
   const IconData = ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0];
   const Icon = IconData.icon;
@@ -66,9 +67,9 @@ function SortableLinkCard({ link }: { link: LinkType }) {
   );
 }
 export function LinksEditor() {
-  const links = useProfile((s) => s.links);
-  const reorderLinks = useProfile((s) => s.reorderLinks);
-  const addLink = useProfile((s) => s.addLink);
+  const links = useProfile(useShallow(s => s.links));
+  const reorderLinks = useProfile(s => s.reorderLinks);
+  const addLink = useProfile(s => s.addLink);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [step, setStep] = useState<'type' | 'details'>('type');
   const [newLink, setNewLink] = useState<Omit<LinkType, 'id'>>({
@@ -116,8 +117,8 @@ export function LinksEditor() {
                 {step === 'type' ? (
                   <div className="grid grid-cols-1 gap-4 pt-6">
                     {LINK_TYPES.map(type => (
-                      <button 
-                        key={type.id} 
+                      <button
+                        key={type.id}
                         onClick={() => selectType(type.id as any)}
                         className="flex items-center gap-6 p-6 rounded-2xl border border-brand-border hover:border-brand-purple hover:bg-brand-bg transition-all group"
                       >
@@ -147,7 +148,7 @@ export function LinksEditor() {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Price</Label>
-                          <Input type="number" required onChange={(e) => setNewLink({ ...newLink, commerce: { ...newLink.commerce!, price: Number(e.target.value) } })} className="h-12 rounded-xl border-brand-border" />
+                          <Input type="number" required onChange={(e) => setNewLink({ ...newLink, commerce: { ...newLink.commerce!, price: Number(e.target.value), currency: 'USD', provider: 'stripe', buttonText: 'Purchase' } })} className="h-12 rounded-xl border-brand-border" />
                         </div>
                         <div className="space-y-2">
                            <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Provider</Label>
@@ -155,12 +156,6 @@ export function LinksEditor() {
                              {COMMERCE_PROVIDERS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                            </select>
                         </div>
-                      </div>
-                    )}
-                    {newLink.type === 'widget' && (
-                       <div className="space-y-2">
-                        <Label className="font-bold text-[10px] uppercase tracking-widest text-brand-muted">Embed URL (Spotify/YT)</Label>
-                        <Input required onChange={(e) => setNewLink({ ...newLink, widget: { ...newLink.widget!, embedUrl: e.target.value } })} placeholder="Full iFrame/Embed URL" className="h-12 rounded-xl border-brand-border bg-brand-bg" />
                       </div>
                     )}
                     <div className="flex items-center justify-between p-4 bg-brand-bg rounded-xl border border-brand-border">

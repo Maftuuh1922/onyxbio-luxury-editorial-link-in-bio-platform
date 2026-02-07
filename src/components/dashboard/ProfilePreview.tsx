@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useProfile } from '@/store/useProfile';
+import { useShallow } from 'zustand/react/shallow';
 import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
@@ -9,9 +10,9 @@ export function ProfilePreview() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
   const avatar = useProfile(s => s.avatar);
-  const links = useProfile(s => s.links);
-  const socials = useProfile(s => s.socials);
-  const appearance = useProfile(s => s.appearance);
+  const links = useProfile(useShallow(s => s.links));
+  const socials = useProfile(useShallow(s => s.socials));
+  const appearance = useProfile(useShallow(s => s.appearance));
   const activeFont = useMemo(() => {
     const all = [...SYSTEM_FONTS, ...GOOGLE_FONTS];
     return all.find(f => f.id === appearance.fontPairId) || all[0];
@@ -39,7 +40,6 @@ export function ProfilePreview() {
           <div className="absolute inset-0 pointer-events-none opacity-40">
             <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
           </div>
-          {/* Top Socials Preview */}
           {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
              <div className={cn(
                "mb-6 flex gap-1.5 p-1.5 rounded-full z-10",
@@ -68,7 +68,7 @@ export function ProfilePreview() {
             <h2 className="text-xl font-bold uppercase tracking-tight leading-tight">{name || 'NAME'}</h2>
             <p className="text-[9px] italic font-serif opacity-70">{tagline}</p>
           </div>
-          <div className="w-full relative z-10 flex flex-col mb-10" style={{ 
+          <div className="w-full relative z-10 flex flex-col mb-10" style={{
             gap: `${appearance.layout.buttonSpacing / 4}px`,
             maxWidth: `${(appearance.layout.containerWidth / 600) * 100}%`
           }}>
@@ -98,7 +98,6 @@ export function ProfilePreview() {
               </motion.div>
             ))}
           </div>
-          {/* Bottom Socials Preview */}
           {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
             <div className="mt-auto relative z-10 pb-4">
               <div className={cn(

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, ExternalLink, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Link as LinkType } from '@/store/useProfile';
+import { useProfile, Link as LinkType } from '@/store/useProfile';
 import { toast } from 'sonner';
 interface WidgetProps {
   link: LinkType;
@@ -40,21 +40,21 @@ export function CommerceLink({ link, appearance }: WidgetProps) {
           <h3 className="font-bold text-xl tracking-[0.05em] uppercase line-clamp-1">{link.title}</h3>
           <p className="text-[10px] uppercase tracking-widest opacity-60 font-medium line-clamp-1">{link.subtitle}</p>
         </div>
-        <div 
+        <div
           className="px-3 py-1 rounded-full border border-current/10 shrink-0"
           style={{ backgroundColor: `${appearance.colors.btnText}10` }}
         >
           <span className="text-xs font-bold">{commerce.currency} {commerce.price}</span>
         </div>
       </div>
-      <div 
+      <div
         className="flex items-center justify-center gap-3 w-full py-3 rounded-xl border border-current/5 group-hover:bg-black/10 transition-colors"
         style={{ backgroundColor: `${appearance.colors.btnText}05` }}
       >
         <ShoppingCart className="w-4 h-4" />
         <span className="text-xs font-bold uppercase tracking-widest">{commerce.buttonText}</span>
       </div>
-      <div 
+      <div
         className="absolute top-0 right-0 w-32 h-32 blur-3xl opacity-0 group-hover:opacity-20 transition-opacity pointer-events-none"
         style={{ backgroundColor: accentColor }}
       />
@@ -64,8 +64,8 @@ export function CommerceLink({ link, appearance }: WidgetProps) {
 export function WidgetLink({ link, appearance }: WidgetProps) {
   const widget = link.widget;
   if (!widget) return null;
-  const cornerRadius = 
-    appearance.buttonShape === 'sharp' ? 'rounded-none' : 
+  const cornerRadius =
+    appearance.buttonShape === 'sharp' ? 'rounded-none' :
     appearance.buttonShape === 'rounded' ? 'rounded-[1.5rem]' : 'rounded-[2rem]';
   return (
     <div
@@ -104,8 +104,8 @@ export function FeaturedWrapper({ children, featured }: { children: React.ReactN
       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
       className="relative group p-0.5"
     >
-      <motion.div 
-        animate={{ 
+      <motion.div
+        animate={{
           opacity: [0.1, 0.3, 0.1],
           scale: [1, 1.05, 1]
         }}
@@ -114,7 +114,6 @@ export function FeaturedWrapper({ children, featured }: { children: React.ReactN
         style={{ backgroundColor: accentColor }}
       />
       <div className="relative z-10">{children}</div>
-      {/* Dynamic Sheen Effect */}
       <motion.div
         animate={{ x: ['-100%', '200%'] }}
         transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 5, ease: "easeInOut" }}

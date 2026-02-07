@@ -1,6 +1,7 @@
 import React, { useMemo, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { useShallow } from 'zustand/react/shallow';
 import { ArrowRight } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SocialDock } from '@/components/ui/SocialDock';
@@ -14,9 +15,9 @@ export function PublicProfilePage() {
   const tagline = useProfile(s => s.tagline);
   const bio = useProfile(s => s.bio);
   const avatar = useProfile(s => s.avatar);
-  const links = useProfile(s => s.links);
-  const appearance = useProfile(s => s.appearance);
-  const customCode = useProfile(s => s.customCode);
+  const links = useProfile(useShallow(s => s.links));
+  const appearance = useProfile(useShallow(s => s.appearance));
+  const customCode = useProfile(useShallow(s => s.customCode));
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   useEffect(() => {
@@ -59,7 +60,14 @@ export function PublicProfilePage() {
   };
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } }
+    show: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { 
+        duration: 0.8, 
+        ease: 'easeOut' 
+      } 
+    }
   };
   return (
     <div className="relative min-h-screen selection:bg-white/20 overflow-x-hidden" style={canvasStyle}>
@@ -71,11 +79,11 @@ export function PublicProfilePage() {
       <div className="fixed inset-0 z-0">
         <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
       </div>
-      <motion.main 
+      <motion.main
         variants={containerVariants}
         initial="hidden"
         animate="show"
-        className="relative z-10 mx-auto px-6 py-24 md:py-32 flex flex-col items-center" 
+        className="relative z-10 mx-auto px-6 py-24 md:py-32 flex flex-col items-center"
         style={{ maxWidth: `${appearance.layout.containerWidth}px` }}
       >
         {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && (
@@ -111,9 +119,9 @@ export function PublicProfilePage() {
             </p>
           </div>
         </motion.header>
-        <motion.nav 
+        <motion.nav
           variants={containerVariants}
-          className="w-full flex flex-col" 
+          className="w-full flex flex-col"
           style={{ gap: `${appearance.layout.buttonSpacing}px` }}
         >
           {links.filter(isLinkVisible).map((link) => (

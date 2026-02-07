@@ -1,8 +1,17 @@
 import {
   Globe, Instagram, Mail, Twitter, Youtube, Linkedin,
   ShoppingBag, Camera, Music2, AtSign, Ghost, Share2,
-  Code, CreditCard, Play, Podcast, Twitch, Video, Discord
+  Code, CreditCard, Play, Podcast, Twitch, Video, MessageSquare
 } from 'lucide-react';
+import { Appearance } from '@/store/useProfile';
+export interface ThemePreset {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  isPro: boolean;
+  appearance: Appearance;
+}
 export const SYSTEM_FONTS = [
   { id: 'arial', name: 'Arial', family: 'Arial, sans-serif' },
   { id: 'georgia', name: 'Georgia', family: 'Georgia, serif' },
@@ -50,12 +59,18 @@ export const ICON_OPTIONS = [
   { id: 'Snapchat', icon: Ghost, label: 'Snapchat' },
   { id: 'Youtube', icon: Youtube, label: 'YouTube' },
   { id: 'Linkedin', icon: Linkedin, label: 'LinkedIn' },
-  { id: 'Discord', icon: Discord, label: 'Discord' },
+  { id: 'Discord', icon: MessageSquare, label: 'Discord' },
   { id: 'Mail', icon: Mail, label: 'Email' },
   { id: 'ShoppingBag', icon: ShoppingBag, label: 'Shop' },
   { id: 'Camera', icon: Camera, label: 'Portfolio' },
   { id: 'Code', icon: Code, label: 'Custom' },
   { id: 'Commerce', icon: CreditCard, label: 'Checkout' }
+];
+export const CURRENCY_OPTIONS = [
+  { id: 'USD', name: 'US Dollar', symbol: '$' },
+  { id: 'EUR', name: 'Euro', symbol: '€' },
+  { id: 'GBP', name: 'British Pound', symbol: '£' },
+  { id: 'JPY', name: 'Japanese Yen', symbol: '¥' },
 ];
 export const BG_PATTERNS = [
   { id: 'none', name: 'None', desc: 'Pure flat canvas' },
@@ -86,7 +101,7 @@ export const WIDGET_PLATFORMS = [
   { id: 'twitch', name: 'Twitch', icon: Twitch },
   { id: 'vimeo', name: 'Vimeo', icon: Video }
 ];
-export const ONYX_THEMES = [
+export const ONYX_THEMES: ThemePreset[] = [
   {
     id: 'editorial-onyx',
     name: 'Onyx Editorial',

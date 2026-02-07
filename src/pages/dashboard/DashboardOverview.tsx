@@ -25,10 +25,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         {payload.map((p: any, i: number) => (
           <div key={i} className="flex items-center justify-between gap-4 mb-1 last:mb-0">
             <span className="text-xs font-bold text-brand-text flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-              {p.name}
+              <div className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color || '#000' }} />
+              {p.name || 'Value'}
             </span>
-            <span className="text-xs font-bold font-karla text-brand-text">{p.value.toLocaleString()}</span>
+            <span className="text-xs font-bold font-karla text-brand-text">{(p.value || 0).toLocaleString()}</span>
           </div>
         ))}
       </div>
