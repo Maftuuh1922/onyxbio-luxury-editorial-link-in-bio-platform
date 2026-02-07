@@ -3,7 +3,6 @@ import { useParams, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Instagram, Youtube, Linkedin, Mail, Globe, Twitter, ArrowRight } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
-import { useAuth } from '@/store/useAuth';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
 const iconMap: Record<string, any> = {
@@ -30,7 +29,7 @@ const getSocialUrl = (platform: string, handle: string) => {
 };
 export function PublicProfilePage() {
   const { username } = useParams();
-  const currentUserUsername = useAuth(s => s.user?.username);
+  // ZUSTAND COMPLIANCE: One primitive per selector
   const profileName = useProfile(s => s.name);
   const profileTagline = useProfile(s => s.tagline);
   const profileBio = useProfile(s => s.bio);
@@ -38,34 +37,38 @@ export function PublicProfilePage() {
   const profileLinks = useProfile(s => s.links);
   const socials = useProfile(s => s.socials);
   const appearance = useProfile(s => s.appearance);
-  const profileSlug = useMemo(() =>
-    (profileName || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, ''),
-    [profileName]
-  );
-  const isOwnProfile = currentUserUsername?.toLowerCase() === username?.toLowerCase();
-  const isDemoProfile = username?.toLowerCase() === 'alexander';
-  const isMatch = username?.toLowerCase() === profileSlug;
-  const displayProfile = (isMatch || isOwnProfile) ? {
-    name: profileName,
-    tagline: profileTagline,
-    bio: profileBio,
-    avatar: profileAvatar,
-    links: profileLinks.filter(l => l.active),
-    socials: socials,
-    appearance: appearance
-  } : isDemoProfile ? {
-    name: "ALEXANDER ONYX",
-    tagline: "Visual Storyteller & Digital Architect",
-    bio: "CREATIVE ��� INNOVATOR • DREAMER",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
-    links: [
-        { id: '1', title: 'PORTFOLIO', subtitle: 'View my latest creative projects', url: '#', icon: 'Globe', active: true },
-        { id: '2', title: 'INSTAGRAM', subtitle: 'Daily glimpses into my process', url: '#', icon: 'Instagram', active: true },
-        { id: '3', title: 'CONTACT', subtitle: 'Let’s build something together', url: '#', icon: 'Mail', active: true },
-    ],
-    socials: { instagram: 'alexander', twitter: 'alexander', linkedin: 'alexander', email: 'hello@alexander.bio', youtube: '' },
-    appearance: { themeId: 'onyx-gold', fontPairId: 'editorial' }
-  } : null;
+  const displayProfile = useMemo(() => {
+    const isDemoProfile = username?.toLowerCase() === 'alexander';
+    // If it's the demo profile "alexander", show pre-defined content
+    if (isDemoProfile) {
+      return {
+        name: "ALEXANDER ONYX",
+        tagline: "Visual Storyteller & Digital Architect",
+        bio: "CREATIVE • INNOVATOR • DREAMER",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
+        links: [
+            { id: '1', title: 'PORTFOLIO', subtitle: 'View my latest creative projects', url: '#', icon: 'Globe', active: true },
+            { id: '2', title: 'INSTAGRAM', subtitle: 'Daily glimpses into my process', url: '#', icon: 'Instagram', active: true },
+            { id: '3', title: 'CONTACT', subtitle: 'Let’s build something together', url: '#', icon: 'Mail', active: true },
+        ],
+        socials: { instagram: 'alexander', twitter: 'alexander', linkedin: 'alexander', email: 'hello@alexander.bio', youtube: '' },
+        appearance: { themeId: 'onyx-gold', fontPairId: 'editorial' }
+      };
+    }
+    // Otherwise, show current store profile if it exists
+    if (profileName) {
+      return {
+        name: profileName,
+        tagline: profileTagline,
+        bio: profileBio,
+        avatar: profileAvatar,
+        links: profileLinks.filter(l => l.active),
+        socials: socials,
+        appearance: appearance
+      };
+    }
+    return null;
+  }, [username, profileName, profileTagline, profileBio, profileAvatar, profileLinks, socials, appearance]);
   if (!displayProfile) {
     return <Navigate to="/" replace />;
   }
@@ -84,23 +87,23 @@ export function PublicProfilePage() {
       <LuxuryBackground />
       <main className="relative z-10 max-w-[680px] mx-auto px-6 py-16 md:py-24 space-y-16 pb-40">
         <header className="flex flex-col items-center text-center space-y-8">
-          <motion.div 
-            initial={{ opacity: 0, y: -20 }} 
-            animate={{ opacity: 1, y: 0 }} 
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             className={cn("font-ornament text-2xl tracking-[0.5em]", themeClasses)}
           >
             ✦ ✦ ✦
           </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }} 
-            animate={{ opacity: 1, scale: 1 }} 
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, type: 'spring' }}
             className="relative w-[160px] h-[160px] rounded-full p-[3px] bg-white/10 backdrop-blur-md overflow-hidden border border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]"
           >
             <img src={displayProfile.avatar} alt={displayProfile.name} className="w-full h-full object-cover rounded-full grayscale-[0.2]" />
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -144,16 +147,16 @@ export function PublicProfilePage() {
           })}
         </nav>
         <footer className="pt-20 text-center space-y-8 pb-10">
-            <div className={cn("font-ornament tracking-[0.8em] text-sm opacity-30 select-none", themeClasses)}>�� ONYXBIO ◆</div>
+            <div className={cn("font-ornament tracking-[0.8em] text-sm opacity-30 select-none", themeClasses)}>✦ ONYXBIO ◆</div>
         </footer>
       </main>
-      {/* Enhanced Floating Social Dock */}
+      {/* Floating Social Dock */}
       <motion.div
         initial={{ y: 100, x: '-50%', opacity: 0 }}
         animate={{ y: 0, x: '-50%', opacity: 1 }}
-        transition={{ 
-          delay: 1.2, 
-          duration: 1.2, 
+        transition={{
+          delay: 1.2,
+          duration: 1.2,
           type: 'spring',
           stiffness: 100,
           damping: 20

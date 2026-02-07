@@ -26,7 +26,7 @@ const PARTICLES_DATA: Particle[] = [
 export function LuxuryBackground() {
   const particles = useMemo(() => PARTICLES_DATA, []);
   return (
-    <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none">
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
       <div className="absolute inset-0 bg-[#0a0a0a]" />
       {/* Golden Breathing Gradients - Softened for luxury mystery */}
       <motion.div

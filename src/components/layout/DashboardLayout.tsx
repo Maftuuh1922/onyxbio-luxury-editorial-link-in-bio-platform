@@ -6,6 +6,7 @@ import { useAuth } from '@/store/useAuth';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { toast } from 'sonner';
 const navItems = [
   { icon: LayoutDashboard, label: 'Overview', path: '/dashboard/overview' },
   { icon: LinkIcon, label: 'Links', path: '/dashboard/links' },
@@ -23,10 +24,18 @@ export function DashboardLayout() {
     logout();
     navigate('/');
   };
+  const handleCopyLink = () => {
+    const profileUrl = `${window.location.origin}/${username}`;
+    navigator.clipboard.writeText(profileUrl);
+    toast.success('Link copied to clipboard', {
+      description: 'Your public atelier is ready to share.',
+      className: 'font-karla font-bold',
+    });
+  };
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full bg-brand-bg font-karla">
-        {/* Desktop Sidebar (hidden on small devices) */}
+        {/* Desktop Sidebar */}
         <Sidebar className="hidden md:flex border-r border-gray-200 bg-white">
           <SidebarHeader className="p-6">
             <Link to="/" className="font-space font-bold text-2xl tracking-tight text-brand-text">
@@ -42,7 +51,12 @@ export function DashboardLayout() {
                 <p className="text-sm font-bold text-brand-text">{fullName}</p>
                 <p className="text-xs text-brand-muted">@{username}</p>
               </div>
-              <Button size="sm" variant="outline" className="w-full rounded-lg text-xs h-8 border-gray-200">
+              <Button 
+                size="sm" 
+                variant="outline" 
+                className="w-full rounded-lg text-xs h-8 border-gray-200 active:scale-95 transition-transform"
+                onClick={handleCopyLink}
+              >
                 <Copy className="w-3 h-3 mr-2" /> Copy Link
               </Button>
             </div>
