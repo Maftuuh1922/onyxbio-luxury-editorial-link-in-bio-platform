@@ -1,41 +1,56 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Palette, UserCircle, Check, Share2, Type, Box, Wind } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useProfile } from '@/store/useProfile';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Slider } from '@/components/ui/slider';
 import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
+import { ColorPicker, FontSelector, ButtonStyleSelector } from '@/components/dashboard/StylePickers';
+import { CodeEditor } from '@/components/dashboard/CodeEditor';
+import { UserCircle, Palette, Type, Layout, Code, Settings as SettingsIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { COLOR_PALETTES, FONT_FAMILIES, BUTTON_SHAPES, BG_PATTERNS } from '@/lib/constants';
+import { BUTTON_SHAPES } from '@/lib/constants';
 export function AppearanceEditor() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
   const bio = useProfile(s => s.bio);
   const appearance = useProfile(s => s.appearance);
-  const socials = useProfile(s => s.socials);
   const updateProfile = useProfile(s => s.updateProfile);
   const updateAppearance = useProfile(s => s.updateAppearance);
-  const updateSocials = useProfile(s => s.updateSocials);
+  const handleColorChange = (key: keyof typeof appearance.colors, value: string) => {
+    updateAppearance({ colors: { ...appearance.colors, [key]: value } });
+  };
+  const handleLayoutChange = (key: keyof typeof appearance.layout, value: any) => {
+    updateAppearance({ layout: { ...appearance.layout, [key]: value } });
+  };
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="py-8 md:py-10 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Editor Side */}
-          <div className="lg:col-span-7 space-y-12">
-            <header>
-              <h1 className="font-display text-4xl text-onyx-white uppercase tracking-wider">Atmosphere</h1>
-              <p className="text-onyx-gray font-serif italic text-lg">Curate your digital fingerprint.</p>
-            </header>
-            {/* Profile Identity */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-onyx-gold mb-2">
-                <UserCircle className="w-5 h-5" />
-                <h3 className="font-ornament text-xs tracking-[0.3em] uppercase">Identity</h3>
-              </div>
-              <div className="grid grid-cols-1 gap-6 glass-card p-8 border-white/5">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className="lg:col-span-7">
+          <Tabs defaultValue="appearance" className="space-y-8">
+            <TabsList className="w-full justify-start bg-transparent border-b border-white/10 p-0 h-auto gap-8 rounded-none overflow-x-auto">
+              {[
+                { id: 'profile', icon: UserCircle, label: 'Profile' },
+                { id: 'appearance', icon: Palette, label: 'Styles' },
+                { id: 'links', icon: Layout, label: 'Links' },
+                { id: 'code', icon: Code, label: 'Code' },
+                { id: 'settings', icon: SettingsIcon, label: 'Settings' }
+              ].map(tab => (
+                <TabsTrigger 
+                  key={tab.id} 
+                  value={tab.id}
+                  className="bg-transparent border-b-2 border-transparent data-[state=active]:border-onyx-gold data-[state=active]:text-onyx-gold rounded-none px-0 py-4 text-xs font-ornament tracking-[0.2em] uppercase transition-all"
+                >
+                  <tab.icon className="w-4 h-4 mr-2" />
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            <TabsContent value="profile" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <section className="glass-card p-8 border-white/5 space-y-6">
                 <div className="space-y-2">
-                  <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Name</Label>
+                  <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Display Name</Label>
                   <Input value={name} onChange={(e) => updateProfile({ name: e.target.value })} className="bg-white/5 border-white/10 rounded-none h-12" />
                 </div>
                 <div className="space-y-2">
@@ -46,107 +61,87 @@ export function AppearanceEditor() {
                   <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Bio</Label>
                   <Textarea value={bio} onChange={(e) => updateProfile({ bio: e.target.value })} className="bg-white/5 border-white/10 rounded-none min-h-[100px]" />
                 </div>
+              </section>
+            </TabsContent>
+            <TabsContent value="appearance" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              {/* Colors */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ColorPicker label="Background" value={appearance.bgColor} onChange={(v) => updateAppearance({ bgColor: v })} />
+                <ColorPicker label="Text Color" value={appearance.colors.profileText} onChange={(v) => handleColorChange('profileText', v)} />
+                <ColorPicker label="Button Fill" value={appearance.colors.btnFill} onChange={(v) => handleColorChange('btnFill', v)} />
+                <ColorPicker label="Button Text" value={appearance.colors.btnText} onChange={(v) => handleColorChange('btnText', v)} />
               </div>
-            </section>
-            {/* Typography */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-onyx-gold mb-2">
-                <Type className="w-5 h-5" />
-                <h3 className="font-ornament text-xs tracking-[0.3em] uppercase">Typography</h3>
+              {/* Typography */}
+              <div className="space-y-4">
+                <Label className="text-[10px] uppercase tracking-widest text-onyx-gold">Typography Engine</Label>
+                <FontSelector selected={appearance.fontPairId} onSelect={(id) => updateAppearance({ fontPairId: id })} />
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {FONT_FAMILIES.map((font) => (
-                  <button
-                    key={font.id}
-                    onClick={() => updateAppearance({ fontPairId: font.id as any })}
-                    className={cn(
-                      "glass-card p-6 border-white/5 text-left transition-all",
-                      appearance.fontPairId === font.id ? "ring-2 ring-onyx-gold bg-onyx-gold/5 border-onyx-gold/40" : "hover:border-white/20"
-                    )}
-                  >
-                    <span className={cn("block text-xl mb-1", font.class)}>Aa</span>
-                    <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white block">{font.name}</span>
-                    <span className="text-[8px] text-onyx-gray uppercase mt-1">{font.desc}</span>
-                  </button>
-                ))}
+              {/* Buttons */}
+              <div className="space-y-6">
+                <Label className="text-[10px] uppercase tracking-widest text-onyx-gold">Button Architecture</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                  {BUTTON_SHAPES.map(shape => (
+                    <button
+                      key={shape.id}
+                      onClick={() => updateAppearance({ buttonShape: shape.id })}
+                      className={cn(
+                        "p-4 rounded-xl border text-[10px] font-bold uppercase",
+                        appearance.buttonShape === shape.id ? "bg-onyx-gold text-onyx-dark border-onyx-gold" : "bg-white/5 border-white/10 text-onyx-white"
+                      )}
+                    >
+                      {shape.name}
+                    </button>
+                  ))}
+                </div>
+                <ButtonStyleSelector 
+                  style={appearance.buttonStyle} 
+                  shadow={appearance.buttonShadow} 
+                  onStyleChange={(v) => updateAppearance({ buttonStyle: v })}
+                  onShadowChange={(v) => updateAppearance({ buttonShadow: v })}
+                />
               </div>
-            </section>
-            {/* Button Architecture */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-onyx-gold mb-2">
-                <Box className="w-5 h-5" />
-                <h3 className="font-ornament text-xs tracking-[0.3em] uppercase">Architecture</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {BUTTON_SHAPES.map((shape) => (
-                  <button
-                    key={shape.id}
-                    onClick={() => updateAppearance({ buttonShape: shape.id as any })}
-                    className={cn(
-                      "glass-card p-6 border-white/5 text-center transition-all",
-                      appearance.buttonShape === shape.id ? "ring-2 ring-onyx-gold bg-onyx-gold/5 border-onyx-gold/40" : "hover:border-white/20"
-                    )}
-                  >
-                    <div className={cn("w-full h-10 border border-white/20 mb-4 bg-white/5 flex items-center justify-center", shape.class)}>
-                      <span className="text-[8px] uppercase tracking-widest">Sample</span>
-                    </div>
-                    <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white">{shape.name}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-            {/* Color Palette */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-onyx-gold mb-2">
-                <Palette className="w-5 h-5" />
-                <h3 className="font-ornament text-xs tracking-[0.3em] uppercase">Palettes</h3>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-                {COLOR_PALETTES.map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => updateAppearance({ paletteId: p.id })}
-                    className={cn(
-                      "group flex flex-col items-center gap-3 transition-all",
-                      appearance.paletteId === p.id ? "scale-105" : "opacity-60 hover:opacity-100"
-                    )}
-                  >
-                    <div className="w-full aspect-square relative p-1 rounded-full border border-white/10 group-hover:border-white/30 transition-colors">
-                      <div className="w-full h-full rounded-full" style={{ backgroundColor: p.primary }} />
-                      {appearance.paletteId === p.id && <div className="absolute inset-0 flex items-center justify-center"><Check className="w-4 h-4 text-black" /></div>}
-                    </div>
-                    <span className="text-[8px] uppercase tracking-tighter text-onyx-gray font-bold">{p.name}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-            {/* Atmosphere (Background Pattern) */}
-            <section className="space-y-6">
-              <div className="flex items-center gap-2 text-onyx-gold mb-2">
-                <Wind className="w-5 h-5" />
-                <h3 className="font-ornament text-xs tracking-[0.3em] uppercase">Atmosphere</h3>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {BG_PATTERNS.map((pattern) => (
-                  <button
-                    key={pattern.id}
-                    onClick={() => updateAppearance({ bgPattern: pattern.id as any })}
-                    className={cn(
-                      "glass-card p-6 border-white/5 text-left transition-all",
-                      appearance.bgPattern === pattern.id ? "ring-2 ring-onyx-gold bg-onyx-gold/5 border-onyx-gold/40" : "hover:border-white/20"
-                    )}
-                  >
-                    <span className="font-ornament text-[10px] tracking-widest uppercase text-onyx-white block mb-1">{pattern.name}</span>
-                    <span className="text-[9px] text-onyx-gray leading-tight block">{pattern.desc}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          </div>
-          {/* Preview Side */}
-          <div className="hidden lg:block lg:col-span-5 relative">
-            <ProfilePreview />
-          </div>
+            </TabsContent>
+            <TabsContent value="links" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <section className="glass-card p-8 border-white/5 space-y-8">
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Button Spacing</Label>
+                    <span className="text-xs text-onyx-gold">{appearance.layout.buttonSpacing}px</span>
+                  </div>
+                  <Slider 
+                    value={[appearance.layout.buttonSpacing]} 
+                    max={40} 
+                    step={2} 
+                    onValueChange={([v]) => handleLayoutChange('buttonSpacing', v)} 
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <Label className="text-[10px] uppercase tracking-widest text-onyx-gray">Max Container Width</Label>
+                    <span className="text-xs text-onyx-gold">{appearance.layout.containerWidth}px</span>
+                  </div>
+                  <Slider 
+                    value={[appearance.layout.containerWidth]} 
+                    min={400} 
+                    max={800} 
+                    step={20} 
+                    onValueChange={([v]) => handleLayoutChange('containerWidth', v)} 
+                  />
+                </div>
+              </section>
+            </TabsContent>
+            <TabsContent value="code" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <CodeEditor />
+            </TabsContent>
+            <TabsContent value="settings" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
+               <div className="glass-card p-8 border-white/5">
+                 <p className="text-onyx-gray text-sm font-serif italic">Advanced profile SEO and sharing settings coming soon.</p>
+               </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+        <div className="lg:col-span-5 relative">
+          <ProfilePreview />
         </div>
       </div>
     </div>
