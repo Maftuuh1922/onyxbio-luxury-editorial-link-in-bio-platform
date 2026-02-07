@@ -1,7 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import { motion, useScroll, useSpring } from 'framer-motion';
-
+import { motion, useScroll, useSpring, Variants } from 'framer-motion';
 import { ArrowRight, Globe } from 'lucide-react';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SocialDock } from '@/components/ui/SocialDock';
@@ -51,24 +50,24 @@ export function PublicProfilePage() {
     return style;
   }, [appearance, activeFont]);
   if (!name && username?.toLowerCase() !== 'alexander') return <Navigate to="/" replace />;
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.3
+        staggerChildren: 0.12,
+        delayChildren: 0.4
       }
     }
   };
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 30 },
     show: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.8,
-        ease: 'easeOut'
+        ease: [0.22, 1, 0.36, 1]
       }
     }
   };
@@ -80,7 +79,10 @@ export function PublicProfilePage() {
       />
       {customCode?.enabled && customCode?.css && <style>{customCode.css}</style>}
       <div className="fixed inset-0 z-0">
-        <LuxuryBackground pattern={appearance?.bgPattern} palettePrimary={appearance?.colors?.accent} />
+        <LuxuryBackground 
+          pattern={appearance?.bgPattern} 
+          palettePrimary={appearance?.colors?.accent} 
+        />
       </div>
       <motion.main
         variants={containerVariants}
@@ -96,10 +98,10 @@ export function PublicProfilePage() {
         )}
         <motion.header
           variants={itemVariants}
-          className="flex flex-col items-center text-center mb-20"
+          className="flex flex-col items-center text-center mb-24 w-full"
         >
           <div
-            className="w-36 h-36 md:w-44 md:h-44 shadow-2xl overflow-hidden mb-12 ring-offset-8 ring-offset-transparent ring-1"
+            className="w-36 h-36 md:w-48 md:h-48 shadow-2xl overflow-hidden mb-12 ring-offset-8 ring-offset-transparent ring-1 transition-all duration-1000"
             style={{
               borderRadius: appearance?.layout?.avatarShape === 'circle' ? '50%' : appearance?.layout?.avatarShape === 'rounded' ? '24%' : '0%',
               borderColor: appearance?.layout?.avatarBorderColor || 'transparent',
@@ -109,15 +111,15 @@ export function PublicProfilePage() {
           >
             <img src={avatar} alt={name} className="w-full h-full object-cover" />
           </div>
-          <div className="space-y-6" style={{ color: appearance?.colors?.profileText || '#e8e8e8' }}>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tighter uppercase leading-none">
+          <div className="space-y-8 w-full px-4" style={{ color: appearance?.colors?.profileText || '#e8e8e8' }}>
+            <h1 className="text-5xl md:text-8xl font-bold tracking-tighter uppercase leading-none break-words">
               {name}
             </h1>
-            <p className="text-xl md:text-2xl italic opacity-80 font-serif">
+            <p className="text-xl md:text-2xl italic opacity-80 font-serif tracking-wide">
               {tagline}
             </p>
-            <div className="w-16 h-px bg-current mx-auto opacity-30 my-8" />
-            <p className="text-[10px] font-bold uppercase tracking-[0.4em] max-w-sm mx-auto leading-relaxed opacity-60">
+            <div className="w-20 h-px bg-current mx-auto opacity-30 my-10" />
+            <p className="text-[11px] font-bold uppercase tracking-[0.5em] max-w-lg mx-auto leading-relaxed opacity-60">
               {bio}
             </p>
           </div>
@@ -140,7 +142,7 @@ export function PublicProfilePage() {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={cn(
-                      "relative group flex items-center justify-between p-6 transition-all duration-500 overflow-hidden",
+                      "relative group flex items-center justify-between p-7 transition-all duration-500 overflow-hidden",
                       appearance?.buttonShape === 'sharp' ? 'rounded-none' :
                       appearance?.buttonShape === 'rounded' ? 'rounded-2xl' : 'rounded-full'
                     )}
@@ -150,22 +152,22 @@ export function PublicProfilePage() {
                       borderColor: appearance?.colors?.btnBorder || 'transparent',
                       borderWidth: '1px',
                       borderStyle: 'solid',
-                      boxShadow: appearance?.buttonShadow === 'hard' ? `6px 6px 0px ${appearance?.colors?.btnBorder || 'transparent'}` : 'none'
+                      boxShadow: appearance?.buttonShadow === 'hard' ? `8px 8px 0px ${appearance?.colors?.btnBorder || 'transparent'}` : 'none'
                     }}
                   >
                     <div className="flex items-center gap-6 relative z-10">
-                      <div className="w-5 h-5 flex items-center justify-center">
+                      <div className="w-6 h-6 flex items-center justify-center opacity-80">
                         {(() => {
                           const iconOption = ICON_OPTIONS.find(i => i.id === link.icon) ?? ICON_OPTIONS[0] ?? { icon: () => null };
                           const Icon = iconOption.icon;
-                          return typeof Icon === 'function' 
-                            ? <Icon className="w-full h-full" /> 
+                          return typeof Icon === 'function'
+                            ? <Icon className="w-full h-full" />
                             : <Globe className="w-full h-full" />;
                         })()}
                       </div>
                       <div className="text-left">
-                        <h3 className="font-bold text-lg tracking-[0.1em] uppercase">{link.title}</h3>
-                        <p className="text-[10px] uppercase tracking-widest opacity-60 font-medium">{link.subtitle}</p>
+                        <h3 className="font-bold text-xl tracking-[0.1em] uppercase">{link.title}</h3>
+                        <p className="text-[10px] uppercase tracking-widest opacity-60 font-medium mt-0.5">{link.subtitle}</p>
                       </div>
                     </div>
                     <ArrowRight className="w-5 h-5 opacity-20 transition-all duration-500 group-hover:translate-x-2 group-hover:opacity-100" />
@@ -176,13 +178,13 @@ export function PublicProfilePage() {
           ))}
         </motion.nav>
         {(appearance?.layout?.socialPosition === 'bottom' || appearance?.layout?.socialPosition === 'both') && (
-           <motion.div variants={itemVariants} className="mt-12">
+           <motion.div variants={itemVariants} className="mt-16">
              <SocialDock />
            </motion.div>
         )}
         {!(appearance?.layout?.hideBranding ?? false) && (
-          <motion.footer variants={itemVariants} className="mt-40 mb-20 text-center opacity-30">
-            <p className="text-[9px] font-bold uppercase tracking-[0.4em]">OnyxBio Pro Editorial</p>
+          <motion.footer variants={itemVariants} className="mt-48 mb-24 text-center opacity-30">
+            <p className="text-[10px] font-bold uppercase tracking-[0.4em] pointer-events-none">OnyxBio Pro Editorial</p>
           </motion.footer>
         )}
       </motion.main>
