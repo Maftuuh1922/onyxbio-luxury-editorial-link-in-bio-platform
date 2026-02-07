@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/store/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import { CheckCircle2, AlertCircle, Eye, EyeOff, Github, Chrome, Apple } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Eye, EyeOff, Chrome, Apple } from 'lucide-react';
 import { cn } from '@/lib/utils';
 interface AuthPageProps {
   mode: 'login' | 'register' | 'forgot-password';
@@ -77,7 +77,7 @@ export function AuthPage({ mode }: AuthPageProps) {
               <div className="space-y-2">
                 <Label className="text-brand-text font-bold">Username</Label>
                 <div className="relative">
-                  <Input 
+                  <Input
                     value={username}
                     onChange={(e) => setUsername(e.target.value.toLowerCase())}
                     placeholder="yourname"
@@ -100,10 +100,10 @@ export function AuthPage({ mode }: AuthPageProps) {
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
                   <Label className="text-brand-text font-bold">Password</Label>
-                  {mode === 'login' && <Link to="/forgot-password" size="sm" className="text-xs text-brand-purple font-bold hover:underline">Forgot?</Link>}
+                  {mode === 'login' && <Link to="/forgot-password" className="text-xs text-brand-purple font-bold hover:underline">Forgot?</Link>}
                 </div>
                 <div className="relative">
-                  <Input 
+                  <Input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}

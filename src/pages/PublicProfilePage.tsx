@@ -29,7 +29,6 @@ const getSocialUrl = (platform: string, handle: string) => {
 };
 export function PublicProfilePage() {
   const { username } = useParams();
-  // ZUSTAND ZERO-TOLERANCE COMPLIANCE: One primitive per selector
   const currentUserUsername = useAuth((s) => s.user?.username);
   const profileName = useProfile((s) => s.name);
   const profileTagline = useProfile((s) => s.tagline);
@@ -123,8 +122,15 @@ export function PublicProfilePage() {
             <div className={cn("font-ornament tracking-[0.6em] text-lg opacity-40", themeClasses)}>◆ ONYXBIO ◆</div>
         </footer>
       </main>
-      <motion.div initial={{ y: 100 }} animate={{ y: 0 }} transition={{ delay: 1, duration: 1, type: 'spring' }} className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
-        <div className="bg-onyx-dark/40 backdrop-blur-xl border border-white/10 px-8 py-4 rounded-full flex items-center gap-8 shadow-2xl">
+      {/* Enhanced Floating Social Dock */}
+      <motion.div 
+        initial={{ y: 100, x: '-50%' }} 
+        animate={{ y: 0, x: '-50%' }} 
+        transition={{ delay: 1, duration: 1, type: 'spring' }} 
+        className="fixed bottom-8 left-1/2 z-[100]"
+      >
+        <div className="bg-onyx-dark/60 backdrop-blur-2xl border border-white/10 px-8 py-5 rounded-full flex items-center gap-8 shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-onyx-gold/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
           {Object.entries(displayProfile.socials).map(([key, value]) => {
             if (!value) return null;
             const platformIconName = key === 'email' ? 'Mail' : key.charAt(0).toUpperCase() + key.slice(1);
@@ -135,7 +141,7 @@ export function PublicProfilePage() {
                 href={getSocialUrl(key, value as string)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={cn("hover:scale-125 transition-all duration-300 hover:text-onyx-gold-light", themeClasses)}
+                className={cn("hover:scale-125 transition-all duration-300 hover:text-onyx-gold-light relative z-10", themeClasses)}
               >
                 <Icon className="w-5 h-5" />
               </a>
