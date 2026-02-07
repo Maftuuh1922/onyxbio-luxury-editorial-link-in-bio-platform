@@ -16,9 +16,11 @@ export default {
 			brand: {
 				'purple': '#8129D9',
 				'lime': '#43E660',
+				'lime-dark': '#2D9E42', // WCAG AA compliant green for light backgrounds
 				'bg': '#F6F7F5',
 				'text': '#1E2330',
 				'muted': '#6A7280',
+				'border': '#E0E2DB',
 			},
 			landing: {
 				'gold-hero': '#c9a961',
