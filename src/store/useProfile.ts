@@ -7,7 +7,7 @@ export interface Link {
   url: string;
   icon: string;
   active: boolean;
-  animation?: 'none' | 'fade' | 'slide' | 'bounce';
+  animation: 'none' | 'fade' | 'slide' | 'bounce';
 }
 export interface Socials {
   instagram: string;
@@ -27,6 +27,7 @@ export interface Appearance {
   buttonShadow: 'none' | 'soft' | 'hard';
   bgType: 'color' | 'gradient' | 'image' | 'video';
   bgColor: string;
+  bgPattern: 'none' | 'dust' | 'grid' | 'constellation';
   bgGradient: {
     type: 'linear' | 'radial';
     angle: number;
@@ -58,14 +59,33 @@ export interface CustomCode {
   js: string;
   enabled: boolean;
 }
-const DEFAULT_PROFILE = {
+interface ProfileState {
+  name: string;
+  tagline: string;
+  bio: string;
+  avatar: string;
+  links: Link[];
+  socials: Socials;
+  appearance: Appearance;
+  customCode: CustomCode;
+  updateProfile: (data: Partial<Pick<ProfileState, 'name' | 'tagline' | 'bio' | 'avatar'>>) => void;
+  addLink: (link: Omit<Link, 'id'>) => void;
+  updateLink: (id: string, data: Partial<Link>) => void;
+  deleteLink: (id: string) => void;
+  reorderLinks: (links: Link[]) => void;
+  updateAppearance: (data: Partial<Appearance> | ((prev: Appearance) => Appearance)) => void;
+  updateSocials: (data: Partial<Socials>) => void;
+  updateCustomCode: (data: Partial<CustomCode>) => void;
+  resetProfile: () => void;
+}
+const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateLink' | 'deleteLink' | 'reorderLinks' | 'updateAppearance' | 'updateSocials' | 'updateCustomCode' | 'resetProfile'> = {
   name: "ALEXANDER ONYX",
   tagline: "Visual Storyteller & Digital Architect",
   bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE THE EXTRAORDINARY",
   avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
   links: [
-    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade' },
-    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true, animation: 'fade' },
+    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade' as const },
+    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true, animation: 'fade' as const },
   ],
   socials: {
     instagram: 'alexander_onyx',
@@ -85,6 +105,7 @@ const DEFAULT_PROFILE = {
     buttonShadow: 'none' as const,
     bgType: 'color' as const,
     bgColor: '#0a0a0a',
+    bgPattern: 'dust' as const,
     bgGradient: {
       type: 'linear' as const,
       angle: 180,
@@ -112,25 +133,6 @@ const DEFAULT_PROFILE = {
     enabled: false
   }
 };
-interface ProfileState {
-  name: string;
-  tagline: string;
-  bio: string;
-  avatar: string;
-  links: Link[];
-  socials: Socials;
-  appearance: Appearance;
-  customCode: CustomCode;
-  updateProfile: (data: Partial<Pick<ProfileState, 'name' | 'tagline' | 'bio' | 'avatar'>>) => void;
-  addLink: (link: Omit<Link, 'id'>) => void;
-  updateLink: (id: string, data: Partial<Link>) => void;
-  deleteLink: (id: string) => void;
-  reorderLinks: (links: Link[]) => void;
-  updateAppearance: (data: any) => void;
-  updateSocials: (data: Partial<Socials>) => void;
-  updateCustomCode: (data: Partial<CustomCode>) => void;
-  resetProfile: () => void;
-}
 type ProfileStore = UseBoundStore<StoreApi<ProfileState>>;
 export const useProfile: ProfileStore = create<ProfileState>()(
   persist(
@@ -156,7 +158,7 @@ export const useProfile: ProfileStore = create<ProfileState>()(
       updateCustomCode: (data) => set((state) => ({
         customCode: { ...state.customCode, ...data }
       })),
-      resetProfile: () => set(DEFAULT_PROFILE),
+      resetProfile: () => set(DEFAULT_PROFILE as any),
     }),
     {
       name: 'onyx-profile-storage-pro-v1',

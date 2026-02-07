@@ -46,23 +46,36 @@ export function PublicProfilePage() {
     const all = [...SYSTEM_FONTS, ...GOOGLE_FONTS];
     return all.find(f => f.id === appearance.fontPairId) || all[0];
   }, [appearance.fontPairId]);
+  const canvasStyle = useMemo(() => {
+    const style: React.CSSProperties = {
+      backgroundColor: appearance.bgColor,
+      fontFamily: activeFont.family
+    };
+    if (appearance.bgType === 'gradient') {
+      const stops = appearance.bgGradient.stops.map(s => `${s.color} ${s.offset}%`).join(', ');
+      style.background = `linear-gradient(${appearance.bgGradient.angle}deg, ${stops})`;
+    }
+    return style;
+  }, [appearance, activeFont]);
   if (!name && username?.toLowerCase() !== 'alexander') return <Navigate to="/" replace />;
   const buttonClass = cn(
     "relative flex items-center justify-between p-6 transition-all duration-300 group overflow-hidden",
-    appearance.buttonShape === 'sharp' ? 'rounded-none' : 
+    appearance.buttonShape === 'sharp' ? 'rounded-none' :
     appearance.buttonShape === 'rounded' ? 'rounded-xl' :
     appearance.buttonShape === 'extra' ? 'rounded-2xl' : 'rounded-full'
   );
   return (
-    <div 
-      className="relative min-h-screen overflow-x-hidden flex flex-col items-center py-16 md:py-24" 
-      style={{ backgroundColor: appearance.bgColor, fontFamily: activeFont.family }}
+    <div
+      className="relative min-h-screen overflow-x-hidden flex flex-col items-center py-16 md:py-24"
+      style={canvasStyle}
     >
       {customCode.enabled && customCode.css && <style>{customCode.css}</style>}
       {customCode.enabled && customCode.html && <div dangerouslySetInnerHTML={{ __html: customCode.html }} />}
-      <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
-      <main 
-        className="relative z-10 w-full px-6 space-y-16" 
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
+      </div>
+      <main
+        className="relative z-10 w-full px-6 space-y-16"
         style={{ maxWidth: `${appearance.layout.containerWidth}px` }}
       >
         <header className="flex flex-col items-center text-center space-y-8">
@@ -70,7 +83,7 @@ export function PublicProfilePage() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-40 h-40 shadow-2xl transition-all overflow-hidden"
-            style={{ 
+            style={{
               borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '20%' : '0%',
               border: `${appearance.layout.avatarBorderWidth}px solid ${appearance.layout.avatarBorderColor}`
             }}
@@ -103,7 +116,7 @@ export function PublicProfilePage() {
                   borderColor: appearance.colors.btnBorder,
                   borderWidth: '1px',
                   borderStyle: 'solid',
-                  boxShadow: appearance.buttonShadow === 'soft' ? '0 10px 30px rgba(0,0,0,0.1)' : 
+                  boxShadow: appearance.buttonShadow === 'soft' ? '0 10px 30px rgba(0,0,0,0.1)' :
                              appearance.buttonShadow === 'hard' ? `6px 6px 0px ${appearance.colors.btnBorder}` : 'none'
                 }}
               >
@@ -126,11 +139,11 @@ export function PublicProfilePage() {
               const IconData = ICON_OPTIONS.find(i => i.id === iconKey) || ICON_OPTIONS[0];
               const Icon = IconData.icon;
               return (
-                <a 
-                  key={key} 
-                  href={getSocialUrl(key, value as string)} 
-                  target="_blank" 
-                  className="hover:scale-125 transition-transform" 
+                <a
+                  key={key}
+                  href={getSocialUrl(key, value as string)}
+                  target="_blank"
+                  className="hover:scale-125 transition-transform"
                   style={{ color: appearance.colors.profileText }}
                 >
                   <Icon className="w-6 h-6 opacity-80" />

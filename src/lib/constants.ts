@@ -32,6 +32,12 @@ export const COLOR_PALETTES = [
   { id: 'midnight', name: 'Midnight', primary: '#3b82f6', secondary: '#0a0a0a' },
   { id: 'emerald', name: 'Emerald', primary: '#10b981', secondary: '#0a0a0a' },
 ];
+export const GRADIENT_PRESETS = [
+  { id: 'onyx-fade', name: 'Onyx Fade', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#1a1a1a', offset: 100 }] },
+  { id: 'golden-glow', name: 'Golden Hour', stops: [{ color: '#1a1a1a', offset: 0 }, { color: '#c9a961', offset: 100 }] },
+  { id: 'midnight-royal', name: 'Midnight Royal', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#1e3a8a', offset: 100 }] },
+  { id: 'deep-maroon', name: 'Velvet Maroon', stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#450a0a', offset: 100 }] },
+];
 export const ICON_OPTIONS = [
   { id: 'Globe', icon: Globe, label: 'Website' },
   { id: 'Instagram', icon: Instagram, label: 'Instagram' },
@@ -52,7 +58,8 @@ export const FONT_FAMILIES = [
   { id: 'classic', name: 'Classic', class: 'font-serif', desc: 'Playfair Display' },
 ];
 export const BG_PATTERNS = [
+  { id: 'none', name: 'None', desc: 'Pure solid background' },
   { id: 'dust', name: 'Dust', desc: 'Floating cinematic particles' },
   { id: 'grid', name: 'Grid', desc: 'Technical structural grid' },
   { id: 'constellation', name: 'Constellation', desc: 'Ethereal connecting nodes' },
-];
+] as const;

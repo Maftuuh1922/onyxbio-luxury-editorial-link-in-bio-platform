@@ -36,17 +36,28 @@ export function ProfilePreview() {
     borderColor: appearance.layout.avatarBorderColor,
     borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '20%' : '0%',
   }), [appearance.layout]);
+  const canvasStyle = useMemo(() => {
+    const style: React.CSSProperties = {
+      backgroundColor: appearance.bgColor,
+      fontFamily: activeFont.family
+    };
+    if (appearance.bgType === 'gradient') {
+      const stops = appearance.bgGradient.stops.map(s => `${s.color} ${s.offset}%`).join(', ');
+      style.background = `linear-gradient(${appearance.bgGradient.angle}deg, ${stops})`;
+    }
+    return style;
+  }, [appearance, activeFont]);
   return (
     <div className="sticky top-24 border border-white/10 rounded-[3rem] p-4 bg-onyx-dark shadow-[0_0_50px_-12px_rgba(201,169,97,0.15)] overflow-hidden aspect-[9/18.5] w-full max-w-[320px] mx-auto group">
-      <div 
+      <div
         className="w-full h-full rounded-[2.5rem] relative overflow-y-auto overflow-x-hidden flex flex-col items-center py-10 px-6 border border-white/5 transition-colors"
-        style={{ backgroundColor: appearance.bgColor, fontFamily: activeFont.family }}
+        style={canvasStyle}
       >
         <div className="absolute inset-0 pointer-events-none opacity-50">
           <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
         </div>
         {/* Avatar */}
-        <div 
+        <div
           className="w-20 h-20 overflow-hidden mb-4 relative z-10 transition-all shadow-xl"
           style={avatarStyles}
         >
@@ -72,7 +83,7 @@ export function ProfilePreview() {
                 key={link.id}
                 className={cn(
                   "w-full flex items-center p-3 transition-all",
-                  appearance.buttonShape === 'sharp' ? 'rounded-none' : 
+                  appearance.buttonShape === 'sharp' ? 'rounded-none' :
                   appearance.buttonShape === 'rounded' ? 'rounded-xl' :
                   appearance.buttonShape === 'extra' ? 'rounded-2xl' : 'rounded-full'
                 )}
