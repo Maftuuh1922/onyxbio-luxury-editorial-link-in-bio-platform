@@ -74,18 +74,19 @@ interface ProfileState {
   deleteLink: (id: string) => void;
   reorderLinks: (links: Link[]) => void;
   updateAppearance: (data: Partial<Appearance> | ((prev: Appearance) => Appearance)) => void;
+  applyTheme: (appearance: Appearance) => void;
   updateSocials: (data: Partial<Socials>) => void;
   updateCustomCode: (data: Partial<CustomCode>) => void;
   resetProfile: () => void;
 }
-const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateLink' | 'deleteLink' | 'reorderLinks' | 'updateAppearance' | 'updateSocials' | 'updateCustomCode' | 'resetProfile'> = {
+const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateLink' | 'deleteLink' | 'reorderLinks' | 'updateAppearance' | 'applyTheme' | 'updateSocials' | 'updateCustomCode' | 'resetProfile'> = {
   name: "ALEXANDER ONYX",
   tagline: "Visual Storyteller & Digital Architect",
   bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE THE EXTRAORDINARY",
   avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
   links: [
-    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade' as const },
-    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true, animation: 'fade' as const },
+    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of cinematic visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true, animation: 'fade' },
+    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the creative process', url: 'https://instagram.com', icon: 'Instagram', active: true, animation: 'fade' },
   ],
   socials: {
     instagram: 'alexander_onyx',
@@ -94,20 +95,20 @@ const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateL
     youtube: 'onyx_studio',
     email: 'hello@onyx.bio',
     discord: 'onyx_collective',
-    position: 'bottom' as const,
+    position: 'bottom',
   },
   appearance: {
     themeId: 'onyx-gold',
     paletteId: 'imperial-gold',
-    fontPairId: 'editorial',
-    buttonShape: 'sharp' as const,
-    buttonStyle: 'fill' as const,
-    buttonShadow: 'none' as const,
-    bgType: 'color' as const,
+    fontPairId: 'playfair',
+    buttonShape: 'sharp',
+    buttonStyle: 'fill',
+    buttonShadow: 'none',
+    bgType: 'color',
     bgColor: '#0a0a0a',
-    bgPattern: 'dust' as const,
+    bgPattern: 'dust',
     bgGradient: {
-      type: 'linear' as const,
+      type: 'linear',
       angle: 180,
       stops: [{ color: '#0a0a0a', offset: 0 }, { color: '#1a1a1a', offset: 100 }]
     },
@@ -119,7 +120,7 @@ const DEFAULT_PROFILE: Omit<ProfileState, 'updateProfile' | 'addLink' | 'updateL
       accent: '#c9a961',
     },
     layout: {
-      avatarShape: 'circle' as const,
+      avatarShape: 'circle',
       avatarBorderWidth: 2,
       avatarBorderColor: '#c9a961',
       buttonSpacing: 16,
@@ -148,10 +149,11 @@ export const useProfile: ProfileStore = create<ProfileState>()(
       deleteLink: (id) => set((state) => ({
         links: state.links.filter((l) => l.id !== id)
       })),
-      reorderLinks: (links) => set({ links }),
+      reorderLinks: (links) => set({ links: [...links] }),
       updateAppearance: (data) => set((state) => ({
         appearance: typeof data === 'function' ? data(state.appearance) : { ...state.appearance, ...data }
       })),
+      applyTheme: (appearance) => set({ appearance: { ...appearance } }),
       updateSocials: (data) => set((state) => ({
         socials: { ...state.socials, ...data }
       })),
@@ -161,7 +163,7 @@ export const useProfile: ProfileStore = create<ProfileState>()(
       resetProfile: () => set(DEFAULT_PROFILE as any),
     }),
     {
-      name: 'onyx-profile-storage-pro-v1',
+      name: 'onyx-profile-storage-pro-v2',
     }
   )
 );

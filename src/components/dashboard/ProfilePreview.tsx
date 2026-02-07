@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
+import { motion, AnimatePresence } from 'framer-motion';
 export function ProfilePreview() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
@@ -11,6 +12,12 @@ export function ProfilePreview() {
   const links = useProfile(s => s.links);
   const socials = useProfile(s => s.socials);
   const appearance = useProfile(s => s.appearance);
+  const [isUpdating, setIsUpdating] = useState(false);
+  useEffect(() => {
+    setIsUpdating(true);
+    const timer = setTimeout(() => setIsUpdating(false), 400);
+    return () => clearTimeout(timer);
+  }, [appearance.themeId]);
   const activeFont = useMemo(() => {
     const all = [...SYSTEM_FONTS, ...GOOGLE_FONTS];
     return all.find(f => f.id === appearance.fontPairId) || all[0];
@@ -50,12 +57,25 @@ export function ProfilePreview() {
   return (
     <div className="sticky top-24 border border-white/10 rounded-[3rem] p-4 bg-onyx-dark shadow-[0_0_50px_-12px_rgba(201,169,97,0.15)] overflow-hidden aspect-[9/18.5] w-full max-w-[320px] mx-auto group">
       <div
-        className="w-full h-full rounded-[2.5rem] relative overflow-y-auto overflow-x-hidden flex flex-col items-center py-10 px-6 border border-white/5 transition-colors"
+        className="w-full h-full rounded-[2.5rem] relative overflow-y-auto overflow-x-hidden flex flex-col items-center py-10 px-6 border border-white/5 transition-all duration-500"
         style={canvasStyle}
       >
         <div className="absolute inset-0 pointer-events-none opacity-50">
           <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
         </div>
+        {/* Loading/Update Overlay */}
+        <AnimatePresence>
+          {isUpdating && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 bg-black/10 backdrop-blur-[2px] flex items-center justify-center"
+            >
+              <div className="w-8 h-8 border-2 border-brand-purple border-t-transparent animate-spin rounded-full" />
+            </motion.div>
+          )}
+        </AnimatePresence>
         {/* Avatar */}
         <div
           className="w-20 h-20 overflow-hidden mb-4 relative z-10 transition-all shadow-xl"
@@ -82,7 +102,7 @@ export function ProfilePreview() {
               <div
                 key={link.id}
                 className={cn(
-                  "w-full flex items-center p-3 transition-all",
+                  "w-full flex items-center p-3 transition-all duration-300",
                   appearance.buttonShape === 'sharp' ? 'rounded-none' :
                   appearance.buttonShape === 'rounded' ? 'rounded-xl' :
                   appearance.buttonShape === 'extra' ? 'rounded-2xl' : 'rounded-full'

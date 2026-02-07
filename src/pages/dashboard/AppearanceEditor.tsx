@@ -7,8 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { ProfilePreview } from '@/components/dashboard/ProfilePreview';
 import { ColorPicker, FontSelector, ButtonStyleSelector, PatternPicker, GradientSelector } from '@/components/dashboard/StylePickers';
+import { ThemeGallery } from '@/components/dashboard/ThemeGallery';
 import { CodeEditor } from '@/components/dashboard/CodeEditor';
-import { UserCircle, Palette, Type, Layout, Code, Settings as SettingsIcon, Layers } from 'lucide-react';
+import { UserCircle, Palette, Type, Layout, Code, Settings as SettingsIcon, Layers, LayoutGrid } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BUTTON_SHAPES } from '@/lib/constants';
 export function AppearanceEditor() {
@@ -28,14 +29,14 @@ export function AppearanceEditor() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10 lg:py-12">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
         <div className="lg:col-span-7">
-          <Tabs defaultValue="appearance" className="space-y-8">
+          <Tabs defaultValue="library" className="space-y-8">
             <TabsList className="w-full justify-start bg-brand-bg border border-brand-border p-1 rounded-xl h-auto gap-1 overflow-x-auto">
               {[
+                { id: 'library', icon: LayoutGrid, label: 'Library' },
                 { id: 'profile', icon: UserCircle, label: 'Profile' },
                 { id: 'appearance', icon: Palette, label: 'Styles' },
                 { id: 'links', icon: Layout, label: 'Links' },
                 { id: 'code', icon: Code, label: 'Code' },
-                { id: 'settings', icon: SettingsIcon, label: 'Settings' }
               ].map(tab => (
                 <TabsTrigger
                   key={tab.id}
@@ -47,6 +48,9 @@ export function AppearanceEditor() {
                 </TabsTrigger>
               ))}
             </TabsList>
+            <TabsContent value="library" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <ThemeGallery />
+            </TabsContent>
             <TabsContent value="profile" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <section className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm space-y-6">
                 <div className="space-y-2">
@@ -64,7 +68,6 @@ export function AppearanceEditor() {
               </section>
             </TabsContent>
             <TabsContent value="appearance" className="space-y-12 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              {/* Background Engine */}
               <div className="space-y-6">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold flex items-center gap-2">
                   <Layers className="w-3 h-3" /> Canvas Architecture
@@ -99,14 +102,12 @@ export function AppearanceEditor() {
                   />
                 </div>
               </div>
-              {/* Typography */}
               <div className="space-y-4">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold flex items-center gap-2">
                   <Type className="w-3 h-3" /> Typography Engine
                 </Label>
                 <FontSelector selected={appearance.fontPairId} onSelect={(id) => updateAppearance({ fontPairId: id })} />
               </div>
-              {/* Buttons */}
               <div className="space-y-6">
                 <Label className="text-[10px] uppercase tracking-widest text-brand-purple font-bold">Button Architecture</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -130,7 +131,6 @@ export function AppearanceEditor() {
                   onShadowChange={(v) => updateAppearance({ buttonShadow: v })}
                 />
               </div>
-              {/* Profile Colors */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 border-t border-brand-border">
                 <ColorPicker label="Primary Text" value={appearance.colors.profileText} onChange={(v) => handleColorChange('profileText', v)} />
                 <ColorPicker label="Button Fill" value={appearance.colors.btnFill} onChange={(v) => handleColorChange('btnFill', v)} />
@@ -169,11 +169,6 @@ export function AppearanceEditor() {
             </TabsContent>
             <TabsContent value="code" className="animate-in fade-in slide-in-from-bottom-2 duration-300">
               <CodeEditor />
-            </TabsContent>
-            <TabsContent value="settings" className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-300">
-               <div className="bg-white border border-brand-border p-8 rounded-2xl shadow-sm">
-                 <p className="text-brand-muted text-sm font-serif italic">Advanced profile SEO and sharing settings are enabled for Pro members.</p>
-               </div>
             </TabsContent>
           </Tabs>
         </div>

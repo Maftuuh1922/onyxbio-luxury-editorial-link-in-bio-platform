@@ -130,7 +130,7 @@ export function LinksEditor() {
             </Dialog>
           </div>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={links.map(l => l.id)} strategy={verticalListStrategy}>
+            <SortableContext items={links.map(l => l.id)} strategy={verticalListSortingStrategy}>
               <div className="space-y-2">
                 <AnimatePresence>
                   {links.map((link) => (
