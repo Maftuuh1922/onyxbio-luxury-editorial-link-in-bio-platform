@@ -16,8 +16,11 @@ export interface Socials {
   email: string;
 }
 export interface Appearance {
-  themeId: 'onyx-gold' | 'silver-noir' | 'royal-emerald';
+  themeId: string;
+  paletteId: string;
   fontPairId: 'classic' | 'modern' | 'editorial';
+  buttonShape: 'sharp' | 'rounded' | 'pill';
+  bgPattern: 'dust' | 'grid' | 'constellation';
 }
 const DEFAULT_PROFILE = {
   name: "ALEXANDER ONYX",
@@ -28,17 +31,22 @@ const DEFAULT_PROFILE = {
     { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true },
     { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the process', url: 'https://instagram.com', icon: 'Instagram', active: true },
     { id: '3', title: 'GET IN TOUCH', subtitle: 'Inquiries for collaborative excellence', url: 'mailto:hello@onyx.bio', icon: 'Mail', active: true },
+    { id: '4', title: 'YOUTUBE', subtitle: 'Visual essays and motion design', url: 'https://youtube.com', icon: 'Youtube', active: true },
+    { id: '5', title: 'SHOP', subtitle: 'Limited edition physical prints', url: 'https://shop.onyx.bio', icon: 'ShoppingBag', active: true },
   ],
   socials: {
     instagram: 'alexander_onyx',
     twitter: 'onyx_vision',
     linkedin: 'alexander-onyx',
-    youtube: '',
+    youtube: 'onyx_studio',
     email: 'hello@onyx.bio',
   },
   appearance: {
-    themeId: 'onyx-gold' as const,
+    themeId: 'onyx-gold',
+    paletteId: 'imperial-gold',
     fontPairId: 'editorial' as const,
+    buttonShape: 'sharp' as const,
+    bgPattern: 'dust' as const,
   },
 };
 interface ProfileState {
@@ -59,7 +67,6 @@ interface ProfileState {
   resetProfile: () => void;
 }
 type ProfileStore = UseBoundStore<StoreApi<ProfileState>>;
-
 export const useProfile: ProfileStore = create<ProfileState>()(
   persist(
     (set) => ({
@@ -79,20 +86,12 @@ export const useProfile: ProfileStore = create<ProfileState>()(
         appearance: { ...state.appearance, ...data }
       })),
       updateSocials: (data) => set((state) => ({
-        socials: { 
-          instagram: '',
-          twitter: '',
-          linkedin: '',
-          youtube: '',
-          email: '',
-          ...state.socials, 
-          ...data 
-        }
+        socials: { ...state.socials, ...data }
       })),
       resetProfile: () => set(DEFAULT_PROFILE),
     }),
     {
-      name: 'onyx-profile-storage-v2',
+      name: 'onyx-profile-storage-v3',
     }
   )
 );
