@@ -68,7 +68,7 @@ export const ICON_OPTIONS = [
 ];
 export const CURRENCY_OPTIONS = [
   { id: 'USD', name: 'US Dollar', symbol: '$' },
-  { id: 'EUR', name: 'Euro', symbol: '€' },
+  { id: 'EUR', name: 'Euro', symbol: '��' },
   { id: 'GBP', name: 'British Pound', symbol: '£' },
   { id: 'JPY', name: 'Japanese Yen', symbol: '¥' },
 ];

@@ -6,7 +6,7 @@ import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SocialDock } from '@/components/ui/SocialDock';
 import { CommerceLink, WidgetLink, FeaturedWrapper } from '@/components/ui/LinkWidgets';
 import { useProfile } from '@/store/useProfile';
-import { cn } from '@/lib/utils';
+import { cn, isLinkVisible } from '@/lib/utils';
 import { Appearance } from '@/store/useProfile';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
 import { useShallow } from 'zustand/react/shallow';
@@ -24,15 +24,6 @@ export function PublicProfilePage() {
   useEffect(() => {
     if (name) document.title = `${name} | OnyxBio Pro`;
   }, [name]);
-  const isLinkVisible = (link: any) => {
-    if (!link.active) return false;
-    if (link.schedule?.enabled) {
-      const now = new Date();
-      if (link.schedule.startAt && new Date(link.schedule.startAt) > now) return false;
-      if (link.schedule.endAt && new Date(link.schedule.endAt) < now) return false;
-    }
-    return true;
-  };
   const activeFont = useMemo(() => {
     if (!appearance?.fontPairId) return { family: 'serif' };
     const all = [...SYSTEM_FONTS, ...GOOGLE_FONTS];
@@ -72,17 +63,21 @@ export function PublicProfilePage() {
       }
     }
   };
+  const visibleLinks = useMemo(() => {
+    return (links || []).filter(isLinkVisible);
+  }, [links]);
+  const accentColor = appearance?.colors?.accent || '#c9a961';
   return (
     <div className="relative min-h-screen selection:bg-white/20 overflow-x-hidden" style={canvasStyle}>
       <motion.div
         className="fixed top-0 left-0 right-0 h-1.5 z-[100] origin-left shadow-lg"
-        style={{ scaleX, backgroundColor: appearance?.colors?.accent || '#c9a961' }}
+        style={{ scaleX, backgroundColor: accentColor }}
       />
       {customCode?.enabled && customCode?.css && <style>{customCode.css}</style>}
       <div className="fixed inset-0 z-0">
         <LuxuryBackground
           pattern={appearance?.bgPattern}
-          palettePrimary={appearance?.colors?.accent}
+          palettePrimary={accentColor}
         />
       </div>
       <motion.main
@@ -130,7 +125,7 @@ export function PublicProfilePage() {
           className="w-full flex flex-col"
           style={{ gap: `${appearance?.layout?.buttonSpacing || 20}px` }}
         >
-          {(links?.filter(isLinkVisible) || []).map((link) => (
+          {visibleLinks.map((link) => (
             <motion.div key={link.id} variants={itemVariants}>
               <FeaturedWrapper featured={link.featured}>
                 {link.type === 'commerce' ? (

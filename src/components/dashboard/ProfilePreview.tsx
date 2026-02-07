@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useProfile } from '@/store/useProfile';
 import { useShallow } from 'zustand/react/shallow';
-import { cn } from '@/lib/utils';
+import { cn, isLinkVisible } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
 import { motion } from 'framer-motion';
@@ -30,9 +30,12 @@ export function ProfilePreview() {
   }, [appearance, activeFont]);
   const activeSocials = Object.entries(socials).filter(([k, v]) => v && k !== 'position');
   const iconStyle = appearance.layout.socialIconStyle || 'minimal';
+  const visibleLinks = useMemo(() => {
+    return (links || []).filter(isLinkVisible).slice(0, 10);
+  }, [links]);
   return (
     <div className="sticky top-24 w-full max-w-[360px] mx-auto group">
-      {/* High-Fidelity Phone Frame: iPhone 15 Pro Ratio (390x844 approx) */}
+      {/* High-Fidelity Phone Frame: iPhone 15 Pro Ratio */}
       <div className="relative w-full aspect-[390/844] bg-[#0f0f0f] rounded-[3.5rem] p-3 border-[12px] border-[#1a1a1a] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden ring-1 ring-white/10">
         {/* Screen Content Wrapper */}
         <div
@@ -49,7 +52,7 @@ export function ProfilePreview() {
           </div>
           {/* Scrolling Content Container */}
           <div className="relative z-10 flex-1 overflow-y-auto scrollbar-hide pt-16 pb-12 px-6 flex flex-col items-center">
-            {/* Social Icons - Top Safe Area */}
+            {/* Social Icons - Top Area */}
             {(appearance.layout.socialPosition === 'top' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
                <div className={cn(
                  "mb-8 flex gap-2.5 p-2 rounded-full",
@@ -84,7 +87,7 @@ export function ProfilePreview() {
             <div className="w-full flex flex-col mb-10" style={{
               gap: `${appearance.layout.buttonSpacing / 2}px`
             }}>
-              {links.filter(l => l.active).slice(0, 10).map((link) => (
+              {visibleLinks.map((link) => (
                 <motion.div
                   key={link.id}
                   className={cn(
@@ -110,6 +113,11 @@ export function ProfilePreview() {
                   </div>
                 </motion.div>
               ))}
+              {visibleLinks.length === 0 && (
+                <div className="text-[10px] opacity-20 text-center py-4 font-bold uppercase tracking-widest border border-dashed border-white/20 rounded-xl">
+                  No modules active
+                </div>
+              )}
             </div>
             {/* Social Icons - Bottom */}
             {(appearance.layout.socialPosition === 'bottom' || appearance.layout.socialPosition === 'both') && activeSocials.length > 0 && (
