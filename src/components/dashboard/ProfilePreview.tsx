@@ -1,9 +1,9 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { useProfile } from '@/store/useProfile';
 import { cn } from '@/lib/utils';
 import { LuxuryBackground } from '@/components/ui/LuxuryBackground';
 import { ICON_OPTIONS, SYSTEM_FONTS, GOOGLE_FONTS } from '@/lib/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 export function ProfilePreview() {
   const name = useProfile(s => s.name);
   const tagline = useProfile(s => s.tagline);
@@ -12,37 +12,10 @@ export function ProfilePreview() {
   const links = useProfile(s => s.links);
   const socials = useProfile(s => s.socials);
   const appearance = useProfile(s => s.appearance);
-  const [isUpdating, setIsUpdating] = useState(false);
-  useEffect(() => {
-    setIsUpdating(true);
-    const timer = setTimeout(() => setIsUpdating(false), 400);
-    return () => clearTimeout(timer);
-  }, [appearance.themeId]);
   const activeFont = useMemo(() => {
     const all = [...SYSTEM_FONTS, ...GOOGLE_FONTS];
     return all.find(f => f.id === appearance.fontPairId) || all[0];
   }, [appearance.fontPairId]);
-  const buttonStyleObj = useMemo(() => {
-    const styles: React.CSSProperties = {
-      backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
-      color: appearance.colors.btnText,
-      borderColor: appearance.colors.btnBorder,
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      marginBottom: `${appearance.layout.buttonSpacing}px`,
-    };
-    if (appearance.buttonShadow === 'soft') {
-      styles.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
-    } else if (appearance.buttonShadow === 'hard') {
-      styles.boxShadow = `4px 4px 0px ${appearance.colors.btnBorder}`;
-    }
-    return styles;
-  }, [appearance]);
-  const avatarStyles = useMemo(() => ({
-    borderWidth: `${appearance.layout.avatarBorderWidth}px`,
-    borderColor: appearance.layout.avatarBorderColor,
-    borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '20%' : '0%',
-  }), [appearance.layout]);
   const canvasStyle = useMemo(() => {
     const style: React.CSSProperties = {
       backgroundColor: appearance.bgColor,
@@ -54,80 +27,75 @@ export function ProfilePreview() {
     }
     return style;
   }, [appearance, activeFont]);
+  const activeSocials = Object.entries(socials).filter(([k, v]) => v && k !== 'position');
   return (
-    <div className="sticky top-24 border border-white/10 rounded-[3rem] p-4 bg-onyx-dark shadow-[0_0_50px_-12px_rgba(201,169,97,0.15)] overflow-hidden aspect-[9/18.5] w-full max-w-[320px] mx-auto group">
-      <div
-        className="w-full h-full rounded-[2.5rem] relative overflow-y-auto overflow-x-hidden flex flex-col items-center py-10 px-6 border border-white/5 transition-all duration-500"
-        style={canvasStyle}
-      >
-        <div className="absolute inset-0 pointer-events-none opacity-50">
-          <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
-        </div>
-        {/* Loading/Update Overlay */}
-        <AnimatePresence>
-          {isUpdating && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 z-50 bg-black/10 backdrop-blur-[2px] flex items-center justify-center"
-            >
-              <div className="w-8 h-8 border-2 border-brand-purple border-t-transparent animate-spin rounded-full" />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {/* Avatar */}
-        <div
-          className="w-20 h-20 overflow-hidden mb-4 relative z-10 transition-all shadow-xl"
-          style={avatarStyles}
+    <div className="sticky top-24 w-full max-w-[320px] mx-auto group">
+      <div className="relative aspect-[9/19] bg-onyx-dark rounded-[3rem] p-3 border-[8px] border-black shadow-2xl overflow-hidden">
+        <div 
+          className="w-full h-full rounded-[2.2rem] relative overflow-y-auto overflow-x-hidden py-10 px-5 flex flex-col items-center border border-white/5 scrollbar-hide"
+          style={canvasStyle}
         >
-          <img
-            src={avatar || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop"}
-            className="w-full h-full object-cover"
-            alt="Avatar Preview"
-          />
-        </div>
-        {/* Identity */}
-        <div className="text-center relative z-10 space-y-1 mb-8 w-full" style={{ color: appearance.colors.profileText }}>
-          <h2 className="text-xl font-bold uppercase tracking-wider">{name || 'NAME'}</h2>
-          <p className="text-[10px] italic opacity-80">{tagline || 'Your tagline here'}</p>
-          {bio && <p className="text-[7px] tracking-[0.2em] uppercase font-ornament mt-2 leading-relaxed opacity-60">{bio}</p>}
-        </div>
-        {/* Links */}
-        <div className="w-full relative z-10 mb-8">
-          {links.filter(l => l.active).slice(0, 5).map((link) => {
-            const IconData = ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0];
-            const Icon = IconData.icon;
-            return (
-              <div
-                key={link.id}
-                className={cn(
-                  "w-full flex items-center p-3 transition-all duration-300",
-                  appearance.buttonShape === 'sharp' ? 'rounded-none' :
-                  appearance.buttonShape === 'rounded' ? 'rounded-xl' :
-                  appearance.buttonShape === 'extra' ? 'rounded-2xl' : 'rounded-full'
-                )}
-                style={buttonStyleObj}
-              >
-                <Icon className="w-3 h-3 mr-3 shrink-0" />
-                <span className="text-[9px] font-bold uppercase tracking-widest truncate">{link.title}</span>
-              </div>
-            );
-          })}
-        </div>
-        {/* Social Dock */}
-        {(socials.position === 'bottom' || socials.position === 'both') && (
-          <div className="mt-auto flex items-center gap-4 relative z-10 pt-4" style={{ color: appearance.colors.profileText }}>
-            {Object.entries(socials).filter(([k, v]) => v && k !== 'position').slice(0, 5).map(([k]) => {
-              const iconKey = k === 'email' ? 'Mail' : k.charAt(0).toUpperCase() + k.slice(1);
-              const IconData = ICON_OPTIONS.find(i => i.id === iconKey) || ICON_OPTIONS[0];
+          <div className="absolute inset-0 pointer-events-none opacity-40">
+            <LuxuryBackground pattern={appearance.bgPattern} palettePrimary={appearance.colors.accent} />
+          </div>
+          <motion.div 
+            className="w-20 h-20 overflow-hidden mb-6 relative z-10 shadow-lg"
+            style={{
+              borderRadius: appearance.layout.avatarShape === 'circle' ? '50%' : appearance.layout.avatarShape === 'rounded' ? '24%' : '0%',
+              borderColor: appearance.layout.avatarBorderColor,
+              borderWidth: `${appearance.layout.avatarBorderWidth}px`,
+              borderStyle: 'solid'
+            }}
+          >
+            <img src={avatar} className="w-full h-full object-cover" alt="Preview" />
+          </motion.div>
+          <div className="text-center relative z-10 space-y-2 mb-10 w-full" style={{ color: appearance.colors.profileText }}>
+            <h2 className="text-xl font-bold uppercase tracking-tight">{name || 'NAME'}</h2>
+            <p className="text-[10px] italic font-serif opacity-80">{tagline}</p>
+          </div>
+          <div className="w-full relative z-10 space-y-3 mb-12">
+            {links.filter(l => l.active).slice(0, 5).map((link) => {
+              const IconData = ICON_OPTIONS.find(i => i.id === link.icon) || ICON_OPTIONS[0];
               const Icon = IconData.icon;
-              return <Icon key={k} className="w-4 h-4 opacity-70" />
+              return (
+                <div
+                  key={link.id}
+                  className={cn(
+                    "w-full flex items-center p-3 text-[10px] font-bold uppercase tracking-widest",
+                    appearance.buttonShape === 'sharp' ? 'rounded-none' :
+                    appearance.buttonShape === 'rounded' ? 'rounded-xl' : 'rounded-full'
+                  )}
+                  style={{
+                    backgroundColor: appearance.buttonStyle === 'fill' ? appearance.colors.btnFill : 'transparent',
+                    color: appearance.colors.btnText,
+                    borderColor: appearance.colors.btnBorder,
+                    borderWidth: '1px',
+                    borderStyle: 'solid'
+                  }}
+                >
+                  <Icon className="w-3 h-3 mr-3" />
+                  <span className="truncate">{link.title}</span>
+                </div>
+              );
             })}
           </div>
-        )}
+          {/* Social Dock Preview */}
+          {activeSocials.length > 0 && (
+            <div className="mt-auto relative z-10">
+              <div className="flex items-center gap-2 p-1.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10">
+                {activeSocials.slice(0, 4).map(([key]) => {
+                  const iconKey = key === 'email' ? 'Mail' : key.charAt(0).toUpperCase() + key.slice(1);
+                  const IconData = ICON_OPTIONS.find(i => i.id === iconKey) || ICON_OPTIONS[0];
+                  const Icon = IconData.icon;
+                  return <Icon key={key} className="w-3 h-3 text-white/60" />;
+                })}
+              </div>
+            </div>
+          )}
+        </div>
+        {/* Dynamic Frame Pulse */}
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-16 h-4 bg-black rounded-full z-20" />
       </div>
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 w-20 h-5 bg-onyx-dark rounded-full border border-white/10 z-20" />
     </div>
   );
 }
