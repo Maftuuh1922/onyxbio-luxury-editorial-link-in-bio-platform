@@ -19,6 +19,28 @@ export interface Appearance {
   themeId: 'onyx-gold' | 'silver-noir' | 'royal-emerald';
   fontPairId: 'classic' | 'modern' | 'editorial';
 }
+const DEFAULT_PROFILE = {
+  name: "ALEXANDER ONYX",
+  tagline: "Visual Storyteller & Digital Architect",
+  bio: "ESTABLISHED IN • CREATIVE CURATION • DESIGNED TO INSPIRE",
+  avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
+  links: [
+    { id: '1', title: 'PORTFOLIO', subtitle: 'A collection of visual experiences', url: 'https://onyx.design', icon: 'Globe', active: true },
+    { id: '2', title: 'INSTAGRAM', subtitle: 'Behind the lens and into the process', url: 'https://instagram.com', icon: 'Instagram', active: true },
+    { id: '3', title: 'GET IN TOUCH', subtitle: 'Inquiries for collaborative excellence', url: 'mailto:hello@onyx.bio', icon: 'Mail', active: true },
+  ],
+  socials: {
+    instagram: 'alexander_onyx',
+    twitter: 'onyx_vision',
+    linkedin: 'alexander-onyx',
+    youtube: '',
+    email: 'hello@onyx.bio',
+  },
+  appearance: {
+    themeId: 'onyx-gold' as const,
+    fontPairId: 'editorial' as const,
+  },
+};
 interface ProfileState {
   name: string;
   tagline: string;
@@ -34,30 +56,12 @@ interface ProfileState {
   reorderLinks: (links: Link[]) => void;
   updateAppearance: (data: Partial<Appearance>) => void;
   updateSocials: (data: Partial<Socials>) => void;
+  resetProfile: () => void;
 }
 export const useProfile = create<ProfileState>()(
   persist(
     (set) => ({
-      name: "ALEXANDER ONYX",
-      tagline: "Visual Storyteller & Digital Architect",
-      bio: "CREATIVE • INNOVATOR • DREAMER",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&h=256&auto=format&fit=crop",
-      links: [
-        { id: '1', title: 'PORTFOLIO', subtitle: 'View my latest creative projects', url: 'https://onyx.design', icon: 'Globe', active: true },
-        { id: '2', title: 'INSTAGRAM', subtitle: 'Daily glimpses into my process', url: 'https://instagram.com', icon: 'Instagram', active: true },
-        { id: '3', title: 'CONTACT', subtitle: 'Let’s build something together', url: 'mailto:hello@onyx.bio', icon: 'Mail', active: true },
-      ],
-      socials: {
-        instagram: 'alexander_onyx',
-        twitter: 'onyx_vision',
-        linkedin: 'alexander-onyx',
-        youtube: 'onyx-studio',
-        email: 'hello@onyx.bio',
-      },
-      appearance: {
-        themeId: 'onyx-gold',
-        fontPairId: 'editorial',
-      },
+      ...DEFAULT_PROFILE,
       updateProfile: (data) => set((state) => ({ ...state, ...data })),
       addLink: (link) => set((state) => ({
         links: [...state.links, { ...link, id: Math.random().toString(36).substr(2, 9) }]
@@ -73,11 +77,20 @@ export const useProfile = create<ProfileState>()(
         appearance: { ...state.appearance, ...data }
       })),
       updateSocials: (data) => set((state) => ({
-        socials: { ...state.socials, ...data }
+        socials: { 
+          instagram: '',
+          twitter: '',
+          linkedin: '',
+          youtube: '',
+          email: '',
+          ...state.socials, 
+          ...data 
+        }
       })),
+      resetProfile: () => set(DEFAULT_PROFILE),
     }),
     {
-      name: 'onyx-profile-storage',
+      name: 'onyx-profile-storage-v2',
     }
   )
 );
